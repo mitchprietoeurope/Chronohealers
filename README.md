@@ -1,2 +1,2 @@
 # Chronohealers
-A site for a rock band and a place to hide the lore
+Meant to save those who are doomed to eternal sleep.
