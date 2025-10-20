@@ -76,31 +76,7 @@
     const form = document.getElementById('gate');
     const input = document.getElementById('code');
 
-    const LOG_963 = `[TRANSMISSION ARCHIVE: CHRONOHEALER SET SORIN]
-[SIGNAL SOURCE: LAYER ZERO // VOID NETWORK]
-[DECRYPTION: PARTIAL // FILE STATUS: CORRUPTED]
-─────────────────────────────────────────────
-> I heard it again.
-> A low pulse… deep, mechanical, ancient.
-> The Gate spoke.
-
-For cycles beyond count, silence was the only voice here.
-But tonight the static bent — and something answered back.
-
-The log came through the old channels, Tower 03... Gateway.
-
-> LOG_ΔTW03-GTW.ACT // SIGNAL_TW03
-> STATUS: UNSTABLE
-> DATASTRING: TH3-G4T3-1S-0P3N
-
-If the Gate spoke… must mean it's happening.
-Another Chronohealer.
-And, the Void knows.
-
-I’m still alive.
-And it also knows.
-─────────────────────────────────────────────
-[END OF RECORD // FILE INTEGRITY 67%]`;
+    const LOG_963 = `[TRANSMISSION ARCHIVE: CHRONOHEALER SET SORIN]\n[SIGNAL SOURCE: LAYER ZERO // VOID NETWORK]\n[DECRYPTION: PARTIAL // FILE STATUS: CORRUPTED]\n─────────────────────────────────────────────\n> I heard it again.\n> A low pulse… deep, mechanical, ancient.\n> The Gate spoke.\n\nFor cycles beyond count, silence was the only voice here.\nBut tonight the static bent — and something answered back.\n\nThe log came through the old channels, Tower 03... Gateway.\n\n> LOG_ΔTW03-GTW.ACT // SIGNAL_TW03\n> STATUS: UNSTABLE\n> DATASTRING: TH3-G4T3-1S-0P3N\n\nIf the Gate spoke… must mean it's happening.\nAnother Chronohealer.\nAnd, the Void knows.\n\nI’m still alive.\nAnd it also knows.\n─────────────────────────────────────────────\n[END OF RECORD // FILE INTEGRITY 67%]`;
 
     function printRow(text, cls="row"){
       const div = document.createElement('div');
@@ -109,17 +85,13 @@ And it also knows.
       screen.appendChild(div);
       screen.scrollTop = screen.scrollHeight;
     }
-
     function printBlock(block){
-      block.split("
-").forEach(line=>printRow(line));
+      block.split("\n").forEach(line=>printRow(line));
     }
-
     // accepted codes (kept secret in UI)
     const codes = new Set([
       'Δ_GTW-01//L0.ACT','LOG_ΔTW03','TW03','LOG_ΔTW03-GTW.ACT','Δ_GTW01','L0.ACT','GTW.ACT'
     ]);
-
     form.addEventListener('submit', (e)=>{
       e.preventDefault();
       const val = input.value.trim();
