@@ -20,12 +20,25 @@ p{color:var(--muted);margin:0 0 24px}
 <div class="wrap">
 <div class="card">
 <h1>CHRONOHEALERS</h1>
-<p>„The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
+<p>"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
 
 
 <!-- Crystal SVG (click opens the ChronoLog Terminal) -->
-<a id="crystal" title="Access ChronoLog">
-<svg class="crystal" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
+<a id="crystal" aria-hidden="true" tabindex="-1">
+  <!-- SVG -->
+</a>
+<div class="crystal-grid" aria-hidden="true">
+  <!-- Example: 9 crystals -->
+  <svg class="crystal small" data-id="c1" ...>...</svg>
+  <svg class="crystal small" data-id="c2" ...>...</svg>
+  <svg class="crystal medium" data-id="c3" ...>...</svg>
+  <svg class="crystal medium" data-id="c4" ...>...</svg>
+  <svg class="crystal gold" data-id="c5" ...>...</svg> <!-- THIS IS THE GOLD ONE -->
+  <svg class="crystal small" data-id="c6" ...>...</svg>
+  <svg class="crystal small" data-id="c7" ...>...</svg>
+  <svg class="crystal medium" data-id="c8" ...>...</svg>
+  <svg class="crystal small" data-id="c9" ...>...</svg>
+</div>
 <defs>
 <linearGradient id="g" x1="0" x2="1">
 <stop offset="0" stop-color="#89ffcf" stop-opacity=".9"/>
@@ -43,8 +56,6 @@ p{color:var(--muted);margin:0 0 24px}
 
 <div>
 <a class="btn" href="/chronologterminal">ENTER CHRONOLOG TERMINAL</a>
-</div>
-<div class="mutedsmall">Tip: the crystal opens a hidden console if you click or tap it.</div>
 </div>
 </div>
 
