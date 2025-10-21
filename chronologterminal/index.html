@@ -1,0 +1,104 @@
+<!doctype html>
+.input{padding:8px;border-radius:6px;border:1px solid rgba(134,255,158,.06);background:#021014;color:var(--accent)}
+.output{white-space:pre-wrap;background:#000;padding:14px;border-radius:8px;margin-top:12px;color:#bfffd6}
+.small{font-size:12px;color:#8fb4a0}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="h1">CHRONOLOG TERMINAL • Layer Zero</div>
+<div class="small">Status: <span id="status">LINK_ESTABLISHED</span></div>
+</div>
+
+
+<div class="list" id="list"></div>
+<div id="viewer"></div>
+</div>
+
+
+<script>
+// CONFIG
+const LOGS_JSON = '/chronologterminal/logs.json';
+
+
+// helpers
+function el(tag, cls, txt){const d = document.createElement(tag); if(cls) d.className = cls; if(txt) d.textContent=txt; return d}
+
+
+async function fetchJSON(url){ const r = await fetch(url); if(!r.ok) throw new Error('Failed to load'); return r.json(); }
+
+
+// WebCrypto decrypt: format = [salt(16)|iv(12)|ciphertext|authTag(16)]
+async function decryptBuffer(buffer, password){
+const data = new Uint8Array(buffer);
+const salt = data.slice(0,16);
+const iv = data.slice(16,28);
+const tag = data.slice(data.length - 16);
+const ciphertext = data.slice(28, data.length - 16);
+// combine ciphertext + tag for subtle
+const cipherPlusTag = new Uint8Array(ciphertext.length + tag.length);
+cipherPlusTag.set(ciphertext,0); cipherPlusTag.set(tag,ciphertext.length);
+
+
+const pwUtf8 = new TextEncoder().encode(password);
+const keyMaterial = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveKey']);
+const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'}, keyMaterial, {name:'AES-GCM', length:256}, false, ['decrypt']);
+const decrypted = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, cipherPlusTag.buffer);
+return decrypted; // ArrayBuffer
+}
+
+
+async function init(){
+const listEl = document.getElementById('list');
+try{
+const logs = await fetchJSON(LOGS_JSON);
+logs.forEach(log=>{
+const box = el('div','log');
+const h = el('h3',null, `${log.id} — ${log.title}`);
+box.appendChild(h);
+const desc = el('div','small', log.summary || '—');
+box.appendChild(desc);
+const openBtn = el('button','btn','OPEN');
+openBtn.onclick = ()=> openLog(log);
+box.appendChild(openBtn);
+listEl.appendChild(box);
+});
+}catch(e){console.error(e); listEl.appendChild(el('div',null,'Failed to load logs'))}
+}
+
+
+async function openLog(log){
+const viewer = document.getElementById('viewer'); viewer.innerHTML='';
+const meta = el('div','log');
+meta.appendChild(el('h3',null,`LOG ${log.id}`));
+const txt = await fetch(log.file).then(r=>r.text());
+const pre = el('div','output', txt);
+meta.appendChild(pre);
+viewer.appendChild(meta);
+
+
+// if encrypted file exists, show password UI
+if(log.encFile){
+const encBox = el('div','log');
+encBox.appendChild(el('div',null,'This record contains an attached file. Enter password to unlock:'));
+const input = el('input','input'); input.placeholder='Access password';
+encBox.appendChild(input);
+const btn = el('button','btn','UNLOCK & DOWNLOAD');
+encBox.appendChild(btn);
+const status = el('div','small'); encBox.appendChild(status);
+btn.onclick = async ()=>{
+const pw = input.value;
+if(!pw) return status.textContent='Enter a password.';
+status.textContent='Downloading encrypted asset...';
+try{
+const resp = await fetch(log.encFile); if(!resp.ok) throw new Error('failed fetch');
+const buf = await resp.arrayBuffer();
+status.textContent='Decrypting...';
+const dec = await decryptBuffer(buf, pw);
+// create blob and prompt download
+const blob = new Blob([dec], {type: log.mime || 'application/octet-stream'});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a'); a.href=url; a.download = log.attachName || 'attachment.bin'; a.click();
+status.textContent='Decryption successful. File downloaded.';
+</html>
