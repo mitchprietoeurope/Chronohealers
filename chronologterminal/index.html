@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ChronoLog Terminal</title>
+  <style>
+    :root{--bg:#010204;--accent:#86ff9e;--muted:#8fb4a0}
+    html,body{height:100%;margin:0;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;background:linear-gradient(180deg,#050708,#020204);color:var(--accent)}
+    .container{padding:28px;max-width:980px;margin:32px auto}
+    .header{display:flex;align-items:center;justify-content:space-between}
+    .h1{font-size:18px}
+    .list{margin-top:18px}
+    .log{background:#061014;padding:14px;border-radius:8px;margin-bottom:10px}
+    .log h3{margin:0 0 8px}
+    .btn{background:transparent;border:1px solid rgba(134,255,158,.18);padding:8px 10px;border-radius:8px;color:var(--accent);cursor:pointer}
+    .input{padding:8px;border-radius:6px;border:1px solid rgba(134,255,158,.06);background:#021014;color:var(--accent)}
+    .output{white-space:pre-wrap;background:#000;padding:14px;border-radius:8px;margin-top:12px;color:#bfffd6}
+    .small{font-size:12px;color:#8fb4a0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="h1">CHRONOLOG TERMINAL • Layer Zero</div>
+      <div class="small">Status: <span id="status">LINK_ESTABLISHED</span></div>
+    </div>
+
+    <div class="list" id="list"></div>
+    <div id="viewer"></div>
+  </div>
+
+  <script>
+    // CONFIG
+    const LOGS_JSON = '/chronologterminal/logs.json';
+
+    // helpers
+    function el(tag, cls, txt){const d=document.createElement(tag); if(cls) d.className=cls; if(txt!==undefined) d.textContent=txt; return d;}
+    async function fetchJSON(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error('Failed to load'); return r.json(); }
+
+    // WebCrypto decrypt: format = [salt(16)|iv(12)|ciphertext|authTag(16)]
+    async function decryptBuffer(buffer, password){
+      const data = new Uint8Array(buffer);
+      const salt = data.slice(0,16);
+      const iv   = data.slice(16,28);
+      const tag  = data.slice(data.length-16);
+      const ciphertext = data.slice(28, data.length-16);
+      const cipherPlusTag = new Uint8Array(ciphertext.length + tag.length);
+      cipherPlusTag.set(ciphertext,0); cipherPlusTag.set(tag,ciphertext.length);
+
+      const pwUtf8 = new TextEncoder().encode(password);
+      const keyMaterial = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'},
+        keyMaterial,
+        {name:'AES-GCM', length:256},
+        false, ['decrypt']
+      );
+      const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, cipherPlusTag.buffer);
+      return dec; // ArrayBuffer
+    }
+
+    async function init(){
+      const listEl = document.getElementById('list');
+      try{
+        const logs = await fetchJSON(LOGS_JSON);
+        logs.forEach(log=>{
+          const box = el('div','log');
+          box.appendChild(el('h3',null,`${log.id} — ${log.title}`));
+          box.appendChild(el('div','small', log.summary || '—'));
+          const btn = el('button','btn','OPEN');
+          btn.onclick = ()=> openLog(log);
+          box.appendChild(btn);
+          listEl.appendChild(box);
+        });
+      }catch(e){
+        console.error(e);
+        listEl.appendChild(el('div',null,'Failed to load logs.json'));
+      }
+    }
+
+    async function openLog(log){
+      const viewer = document.getElementById('viewer');
+      viewer.innerHTML = '';
+      const meta = el('div','log');
+      meta.appendChild(el('h3',null,`LOG ${log.id}`));
+      const txt = await fetch(log.file, {cache:'no-store'}).then(r=>r.text());
+      meta.appendChild(el('div','output', txt));
+      viewer.appendChild(meta);
+
+      if(log.encFile){
+        const encBox = el('div','log');
+        encBox.appendChild(el('div',null,'This record contains an attached file. Enter password to unlock:'));
+        const input = el('input','input'); input.placeholder='Access password';
+        encBox.appendChild(input);
+        const btn = el('button','btn','UNLOCK & DOWNLOAD');
+        const status = el('div','small'); 
+        encBox.appendChild(btn); encBox.appendChild(status);
+
+        btn.onclick = async ()=>{
+          const pw = input.value;
+          if(!pw){ status.textContent='Enter a password.'; return; }
+          status.textContent='Downloading encrypted asset...';
+          try{
+            const resp = await fetch(log.encFile, {cache:'no-store'}); if(!resp.ok) throw new Error('fetch failed');
+            const buf  = await resp.arrayBuffer();
+            status.textContent='Decrypting...';
+            const dec  = await decryptBuffer(buf, pw);
+            const blob = new Blob([dec], {type: log.mime || 'application/octet-stream'});
+            const url  = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href=url; a.download = log.attachName || 'attachment.bin'; a.click();
+            status.textContent='Decryption successful. File downloaded.';
+          }catch(err){
+            console.error(err);
+            status.textContent='Failed to decrypt. Wrong password or corrupt file.';
+          }
+        };
+        viewer.appendChild(encBox);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
