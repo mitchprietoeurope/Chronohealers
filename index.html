@@ -5,6 +5,35 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Chronohealers</title>
 <style>
+  .crystal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin: 18px 0 28px;
+}
+
+.crystal {
+  width: 72px;
+  height: 72px;
+  color: url(#crystalGrad);
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .6));
+  cursor: pointer;
+  transition: transform .16s ease, filter .16s ease, opacity .2s;
+  opacity: .95;
+}
+
+.crystal.small { width: 48px; height: 48px; opacity: .85; }
+.crystal.medium { width: 64px; height: 64px; }
+.crystal.gold {
+  width: 88px;
+  height: 88px;
+  color: url(#crystalGold);
+  filter: drop-shadow(0 10px 30px rgba(207, 163, 74, .35));
+}
+
+.crystal:hover { transform: translateY(-3px) scale(1.02); }
+
 :root{--bg:#020405;--accent:#86ff9e;--muted:#8fb4a0}
 html,body{height:100%;margin:0;font-family:Inter, system-ui, sans-serif;background:linear-gradient(180deg,#020405 0%,#071216 100%);color:#dfffe6}
 .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
@@ -17,6 +46,25 @@ p{color:var(--muted);margin:0 0 24px}
 </style>
 </head>
 <body>
+  <!-- Definição do cristal -->
+<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
+  <defs>
+    <linearGradient id="crystalGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#89ffcf"/>
+      <stop offset="1" stop-color="#3bd0ff"/>
+    </linearGradient>
+    <linearGradient id="crystalGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8E390"/>
+      <stop offset="1" stop-color="#CFA34A"/>
+    </linearGradient>
+    <symbol id="crystalIcon" viewBox="0 0 64 64">
+      <path d="M32 2 L46 22 L32 62 L18 22 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M32 10 L40 24 L32 52 L24 24 Z" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M24 24 L46 22 M40 24 L18 22 M32 10 L32 2" stroke="currentColor" stroke-opacity=".35" stroke-width="1"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="wrap">
 <div class="card">
 <h1>CHRONOHEALERS</h1>
@@ -24,21 +72,22 @@ p{color:var(--muted);margin:0 0 24px}
 
 
 <!-- Crystal SVG (click opens the ChronoLog Terminal) -->
-<a id="crystal" aria-hidden="false" tabindex="-1">
+<a id="crystal" aria-hidden="true" tabindex="-1">
   <!-- SVG -->
 </a>
-<div class="crystal-grid" aria-hidden="false">
-  <!-- Example: 9 crystals -->
-  <svg class="crystal small" data-id="c1" ...>...</svg>
-  <svg class="crystal small" data-id="c2" ...>...</svg>
-  <svg class="crystal medium" data-id="c3" ...>...</svg>
-  <svg class="crystal medium" data-id="c4" ...>...</svg>
-  <svg class="crystal gold" data-id="c5" ...>...</svg> <!-- THIS IS THE GOLD ONE -->
-  <svg class="crystal small" data-id="c6" ...>...</svg>
-  <svg class="crystal small" data-id="c7" ...>...</svg>
-  <svg class="crystal medium" data-id="c8" ...>...</svg>
-  <svg class="crystal small" data-id="c9" ...>...</svg>
+<!-- grade de cristais -->
+<div class="crystal-grid" aria-hidden="true">
+  <svg class="crystal small"><use href="#crystalIcon"/></svg>
+  <svg class="crystal small"><use href="#crystalIcon"/></svg>
+  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+  <svg class="crystal gold"><use href="#crystalIcon"/></svg> <!-- o clicável -->
+  <svg class="crystal small"><use href="#crystalIcon"/></svg>
+  <svg class="crystal small"><use href="#crystalIcon"/></svg>
+  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+  <svg class="crystal small"><use href="#crystalIcon"/></svg>
 </div>
+  
 <defs>
 <linearGradient id="g" x1="0" x2="1">
 <stop offset="0" stop-color="#89ffcf" stop-opacity=".9"/>
@@ -53,18 +102,23 @@ p{color:var(--muted);margin:0 0 24px}
 </svg>
 </a>
 
-
-<div>
-<a class="btn" href="/chronologterminal">ENTER CHRONOLOG TERMINAL</a>
-</div>
-</div>
-
-
 <script>
 // Click crystal -> open terminal
 document.getElementById('crystal').addEventListener('click', ()=>{
 window.location.href = '/chronologterminal';
 });
+</script>
+  <script>
+  document.querySelectorAll('.crystal').forEach(c => {
+    c.addEventListener('click', () => {
+      if (c.classList.contains('gold')) {
+        window.location.href = '/chronologterminal';
+      } else {
+        c.style.transform = 'translateY(-1px) scale(.99)';
+        setTimeout(() => { c.style.transform = ''; }, 140);
+      }
+    });
+  });
 </script>
 </body>
 </html>
