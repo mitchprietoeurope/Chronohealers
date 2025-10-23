@@ -20,106 +20,169 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="h1">CHRONOLOG TERMINAL • Layer Zero</div>
-      <div class="small">Status: <span id="status">LINK_ESTABLISHED</span></div>
-    </div>
-
-    <div class="list" id="list"></div>
-    <div id="viewer"></div>
+ <div class="container">
+  <div class="header">
+    <div class="h1">CHRONOLOG TERMINAL • Layer Zero</div>
+    <div class="small">Status: <span id="status">LINK_NEGOTIATING</span></div>
   </div>
 
-  <script>
-    // CONFIG
-    const LOGS_JSON = '/chronologterminal/logs.json';
+  <div id="screen" class="output" aria-live="polite"></div>
 
-    // helpers
-    function el(tag, cls, txt){const d=document.createElement(tag); if(cls) d.className=cls; if(txt!==undefined) d.textContent=txt; return d;}
-    async function fetchJSON(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error('Failed to load'); return r.json(); }
+  <form id="cmd" style="margin-top:10px; display:flex; gap:8px">
+    <input id="input" class="input" placeholder="ENTER ACCESS CODE (or type HELP)" autocomplete="off">
+    <button class="btn" type="submit">RUN</button>
+  </form>
+</div>
 
-    // WebCrypto decrypt: format = [salt(16)|iv(12)|ciphertext|authTag(16)]
-    async function decryptBuffer(buffer, password){
-      const data = new Uint8Array(buffer);
-      const salt = data.slice(0,16);
-      const iv   = data.slice(16,28);
-      const tag  = data.slice(data.length-16);
-      const ciphertext = data.slice(28, data.length-16);
-      const cipherPlusTag = new Uint8Array(ciphertext.length + tag.length);
-      cipherPlusTag.set(ciphertext,0); cipherPlusTag.set(tag,ciphertext.length);
 
-      const pwUtf8 = new TextEncoder().encode(password);
-      const keyMaterial = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveKey']);
-      const key = await crypto.subtle.deriveKey(
-        {name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'},
-        keyMaterial,
-        {name:'AES-GCM', length:256},
-        false, ['decrypt']
-      );
-      const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, cipherPlusTag.buffer);
-      return dec; // ArrayBuffer
+ <script>
+  const LOGS_JSON = '/chronologterminal/logs.json';
+  const screen = document.getElementById('screen');
+  const statusEl = document.getElementById('status');
+  const form = document.getElementById('cmd');
+  const input = document.getElementById('input');
+
+  let logs = [];
+
+  // print helpers
+  const line = (t='', cls='') => {
+    const d = document.createElement('div');
+    d.textContent = t; if(cls) d.className = cls;
+    screen.appendChild(d); screen.scrollTop = screen.scrollHeight;
+  };
+  const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+
+  // decrypt helper (mesmo do teu)
+  async function decryptBuffer(buffer, password){
+    const data = new Uint8Array(buffer);
+    const salt = data.slice(0,16), iv = data.slice(16,28), tag = data.slice(data.length-16);
+    const ciphertext = data.slice(28, data.length-16);
+    const blob = new Uint8Array(ciphertext.length + tag.length);
+    blob.set(ciphertext,0); blob.set(tag,ciphertext.length);
+    const pw = new TextEncoder().encode(password);
+    const keyMat = await crypto.subtle.importKey('raw', pw, 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'}, keyMat, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    return crypto.subtle.decrypt({name:'AES-GCM', iv}, key, blob.buffer);
+  }
+
+  async function boot(){
+    statusEl.textContent = 'LINK_NEGOTIATING';
+    line('[BOOT] INIT…'); await sleep(300);
+    line('[SCAN] VOID NETWORK…'); await sleep(300);
+    line('[AUTH] HANDSHAKE L0…'); await sleep(300);
+    statusEl.textContent = 'LINK_ESTABLISHED';
+    line('[STATUS] LINK_ESTABLISHED');
+    line('────────────────────────────────');
+    line('VOID NETWORK ACCESS');
+    line('Enter ACCESS CODE or type HELP');
+    line('────────────────────────────────');
+  }
+
+  async function loadLogs(){
+    try{
+      const r = await fetch(LOGS_JSON,{cache:'no-store'});
+      logs = await r.json();
+    }catch{
+      // silencioso: sem listar nada
+    }
+  }
+
+  function help(){
+    line('AVAILABLE COMMANDS:');
+    line('  HELP            – show this help');
+    line('  LIST            – list transmissions (masked)');
+    line("  ACCESS <CODE>   – open a record (ex: ACCESS 963 or ACCESS LOG_ΔTW03)");
+  }
+
+  function listMasked(){
+    if(!logs.length){ line('No transmissions known.'); return; }
+    line('KNOWN TRANSMISSIONS (MASKED):');
+    logs.forEach(l=> line(`  • ${l.id} — ${l.title.replace(/[A-Za-z0-9]/g,'█')}`));
+  }
+
+  async function openByCode(code){
+    const normalized = code.trim().toUpperCase();
+    // match por id numérico (963) ou presença do id no title/arquivo
+    let match = logs.find(l=> l.id.toUpperCase()===normalized);
+    if(!match){
+      // tentativa básica: se digitar LOG_ΔTW03 ou 964, mapeia
+      match = logs.find(l=>{
+        const bag = [l.id, l.title, l.file].join(' ').toUpperCase();
+        return bag.includes(normalized);
+      });
+    }
+    if(!match){ line('ACCESS: DENIED'); return; }
+
+    // carrega o texto
+    try{
+      const txt = await fetch(match.file,{cache:'no-store'}).then(r=>r.text());
+      line('────────────────────────────────'); 
+      line(`[OPEN] LOG ${match.id}`);
+      line(txt); 
+      line('────────────────────────────────'); 
+    }catch{
+      line('ERROR: Failed to recover record.');
     }
 
-    async function init(){
-      const listEl = document.getElementById('list');
-      try{
-        const logs = await fetchJSON(LOGS_JSON);
-        logs.forEach(log=>{
-          const box = el('div','log');
-          box.appendChild(el('h3',null,`${log.id} — ${log.title}`));
-          box.appendChild(el('div','small', log.summary || '—'));
-          const btn = el('button','btn','OPEN');
-          btn.onclick = ()=> openLog(log);
-          box.appendChild(btn);
-          listEl.appendChild(box);
-        });
-      }catch(e){
-        console.error(e);
-        listEl.appendChild(el('div',null,'Failed to load logs.json'));
-      }
+    // anexo opcional
+    if(match.encFile){
+      line('ATTACHMENT: ENCRYPTED — type PASS <password> to unlock & download');
+      // armazena no form uma “sessão” simples
+      form.dataset.pendingEnc = match.encFile;
+      form.dataset.attachName = match.attachName || 'attachment.bin';
+      form.dataset.mime = match.mime || 'application/octet-stream';
+    } else {
+      delete form.dataset.pendingEnc;
     }
+  }
 
-    async function openLog(log){
-      const viewer = document.getElementById('viewer');
-      viewer.innerHTML = '';
-      const meta = el('div','log');
-      meta.appendChild(el('h3',null,`LOG ${log.id}`));
-      const txt = await fetch(log.file, {cache:'no-store'}).then(r=>r.text());
-      meta.appendChild(el('div','output', txt));
-      viewer.appendChild(meta);
-
-      if(log.encFile){
-        const encBox = el('div','log');
-        encBox.appendChild(el('div',null,'This record contains an attached file. Enter password to unlock:'));
-        const input = el('input','input'); input.placeholder='Access password';
-        encBox.appendChild(input);
-        const btn = el('button','btn','UNLOCK & DOWNLOAD');
-        const status = el('div','small'); 
-        encBox.appendChild(btn); encBox.appendChild(status);
-
-        btn.onclick = async ()=>{
-          const pw = input.value;
-          if(!pw){ status.textContent='Enter a password.'; return; }
-          status.textContent='Downloading encrypted asset...';
-          try{
-            const resp = await fetch(log.encFile, {cache:'no-store'}); if(!resp.ok) throw new Error('fetch failed');
-            const buf  = await resp.arrayBuffer();
-            status.textContent='Decrypting...';
-            const dec  = await decryptBuffer(buf, pw);
-            const blob = new Blob([dec], {type: log.mime || 'application/octet-stream'});
-            const url  = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download = log.attachName || 'attachment.bin'; a.click();
-            status.textContent='Decryption successful. File downloaded.';
-          }catch(err){
-            console.error(err);
-            status.textContent='Failed to decrypt. Wrong password or corrupt file.';
-          }
-        };
-        viewer.appendChild(encBox);
-      }
+  async function tryPassword(pw){
+    const enc = form.dataset.pendingEnc;
+    if(!enc){ line('No pending encrypted attachment.'); return; }
+    line('[DECRYPT] downloading…');
+    try{
+      const buf = await fetch(enc,{cache:'no-store'}).then(r=>r.arrayBuffer());
+      const dec = await decryptBuffer(buf, pw);
+      const blob = new Blob([dec], {type: form.dataset.mime});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download=form.dataset.attachName; a.click();
+      line('[DECRYPT] success — file saved.');
+      delete form.dataset.pendingEnc;
+    }catch{
+      line('[DECRYPT] failed — wrong password or corrupt file.');
     }
+  }
 
-    init();
-  </script>
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const value = input.value.trim();
+    if(!value) return;
+    line('> ' + value);
+    input.value='';
+
+    const [cmd, ...rest] = value.split(' ');
+    const arg = rest.join(' ').trim();
+
+    switch(cmd.toUpperCase()){
+      case 'HELP': help(); break;
+      case 'LIST': listMasked(); break;
+      case 'ACCESS':
+        if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
+        await openByCode(arg); break;
+      case 'PASS':
+        if(!arg){ line('USAGE: PASS <password>'); break; }
+        await tryPassword(arg); break;
+      default:
+        // tentativa direta: se o usuário só digitar 963 ou LOG_ΔTW03
+        await openByCode(cmd + (arg?' '+arg:''));
+    }
+  });
+
+  (async function(){
+    await loadLogs();
+    await boot();
+    input.focus();
+  })();
+</script>
 </body>
 </html>
