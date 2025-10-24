@@ -66,9 +66,15 @@
 .crystal:hover { transform: translateY(-3px) scale(1.02); }
 
 :root{--bg:#020405;--accent:#86ff9e;--muted:#8fb4a0}
-html,body{height:100%;margin:0;font-family:Inter, system-ui, sans-serif;background:linear-gradient(180deg,#020405 0%,#071216 100%);color:#dfffe6}
-.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
-.card{width:min(920px,90vw);padding:48px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+html, body { height:100%; }
+body{
+  min-height:100vh;                 /* cobre a altura total */
+  background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
+}
+/* deixa o card crescer com o conteúdo */
+.card{ height:auto; min-height:unset; overflow:visible; }
+/* se houver algo como .wrap com altura fixa, remova */
+.wrap{ width:min(980px, 92vw); margin:0 auto; }
 h1{font-size:34px;margin:0 0 12px}
 p{color:var(--muted);margin:0 0 24px}
 .crystal{width:96px;height:96px;margin:20px auto;display:block;cursor:pointer;filter:drop-shadow(0 8px 30px rgba(0,0,0,.7));}
