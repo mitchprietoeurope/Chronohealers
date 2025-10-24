@@ -1,10 +1,42 @@
 <!doctype html>
 <html lang="en">
 <head>
+<header>…</header>
+
+<main class="page">
+  <!-- hero: título + frase + capa + botões + cristais -->
+  …
+</main>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Chronohealers</title>
  <style>
+  /* fundo cobrindo a página toda */
+html, body { height: 100%; }
+body{
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
+}
+
+/* dá “uns 3 cm” de respiro (responsivo) */
+.page{
+  padding-top: clamp(48px, 9vh, 120px);  /* ~5–12rem dependendo da tela */
+  padding-bottom: 64px;
+}
+
+/* se tiver .card/.wrap do teu layout, garante que não travem a altura */
+.wrap{ width:min(980px, 92vw); margin:0 auto; }
+.card{ height:auto; min-height:unset; overflow:visible; margin:0 auto 48px; }
+
+/* header fixo opcional, mas sem esmagar o conteúdo */
+header{
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(5,10,12,.6);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(134,255,158,.08);
+}
+
   .crystal-grid {
   display: flex;
   flex-wrap: wrap;
