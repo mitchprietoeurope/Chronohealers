@@ -1,246 +1,182 @@
 <!doctype html>
 <html lang="en">
 <head>
-<header>…</header>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chronohealers</title>
+  <style>
+    :root{ --accent:#86ff9e; --muted:#8fb4a0; }
 
-<main class="page">
-  <!-- hero: título + frase + capa + botões + cristais -->
-  …
-</main>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chronohealers</title>
- <style>
-  /* fundo cobrindo a página toda */
-html, body { height: 100%; }
-body{
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
-}
+    /* Fundo cobrindo tudo */
+    html, body { height:100%; }
+    body{
+      margin:0;
+      min-height:100vh;
+      background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
+      color: var(--accent);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
 
-/* dá “uns 3 cm” de respiro (responsivo) */
-.page{
-  padding-top: clamp(48px, 9vh, 120px);  /* ~5–12rem dependendo da tela */
-  padding-bottom: 64px;
-}
+    /* Header fixo e discreto */
+    header{
+      position:sticky; top:0; z-index:100;
+      background: rgba(5,10,12,.6);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(134,255,158,.08);
+    }
+    nav{ max-width:1100px; margin:0 auto; padding:10px 16px;
+         display:flex; align-items:center; justify-content:space-between; }
+    nav a{ color:#8fb4a0; text-decoration:none; }
+    nav .brand{ color:var(--accent); font-weight:700; letter-spacing:.5px; }
 
-/* se tiver .card/.wrap do teu layout, garante que não travem a altura */
-.wrap{ width:min(980px, 92vw); margin:0 auto; }
-.card{ height:auto; min-height:unset; overflow:visible; margin:0 auto 48px; }
+    /* Página com respiro no topo (~3cm adaptativo) */
+    main.page{ padding-top: clamp(48px, 9vh, 120px); padding-bottom: 64px; }
 
-/* header fixo opcional, mas sem esmagar o conteúdo */
-header{
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(5,10,12,.6);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(134,255,158,.08);
-}
+    .wrap{ width:min(980px, 92vw); margin:0 auto; }
+    .card{
+      background: linear-gradient(180deg, #0d1417 0%, #091114 100%);
+      border:1px solid #1b2b30; border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 120px rgba(134,255,158,.05);
+      padding:24px; margin:0 auto 48px;
+    }
 
-  .crystal-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: center;
-  margin: 18px 0 28px;
-}
+    h1{ font-size:34px; margin:0 0 12px; }
+    p{ color:var(--muted); margin:0 0 24px; }
 
-.crystal-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: center;
-  margin: 18px 0 28px;
-}
-/* cor base (ciano/verde) para todos */
-.crystal {
-  width: 72px;
-  height: 72px;
-  color: #86ff9e;                /* <<< cor padrão */
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .6));
-  cursor: pointer;
-  transition: transform .16s ease, filter .2s ease, opacity .2s;
-  opacity: .95;
-}
-.crystal.small  { width: 48px; height: 48px; opacity: .85; }
-.crystal.medium { width: 64px; height: 64px; }
+    /* Capa + botões */
+    .release{ text-align:center; padding:10px 0 0; }
+    .release img{ max-width:320px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
+    .buttons{ margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; font-size:13px; border-radius:10px;
+      border:1px solid #1c3d2a; background:#0f2a1a; color:#a8ffbf; text-decoration:none;
+    }
+    .btn:hover{ background:#143720; }
 
-/* dourado com glow */
-.crystal.gold {
-  width: 88px;
-  height: 88px;
-  color: #f8e390; /* dourado */
-  filter:
-    drop-shadow(0 0 8px  rgba(255, 215, 80, 0.60))
-    drop-shadow(0 0 18px rgba(255, 205, 40, 0.30))
-    drop-shadow(0 10px 30px rgba(0, 0, 0, .35));
-  transition: transform .16s ease, filter .25s ease;
-}
+    .socials{ display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .social{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; font-size:13px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.35); background:transparent; color:#fff; text-decoration:none;
+    }
+    .social:hover{ background:rgba(255,255,255,.08) }
+    .social svg{ width:16px; height:16px; }
 
-.crystal:hover      { transform: translateY(-3px) scale(1.02); }
-.crystal.gold:hover {
-  filter:
-    drop-shadow(0 0 10px rgba(255, 240, 180, 0.90))
-    drop-shadow(0 0 28px rgba(255, 210, 90, 0.50))
-    drop-shadow(0 12px 36px rgba(0, 0, 0, .45));
-}
+    /* Cristais */
+    .crystal-grid{ display:flex; flex-wrap:wrap; gap:18px; justify-content:center; margin:18px 0 28px; }
+    .crystal{
+      width:72px; height:72px; color:#86ff9e;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
+      cursor:pointer; transition: transform .16s ease, filter .25s ease, opacity .2s; opacity:.95;
+    }
+    .crystal.small{ width:48px; height:48px; opacity:.85; }
+    .crystal.medium{ width:64px; height:64px; }
+    .crystal.gold{ width:88px; height:88px; color:#f8e390;
+      filter: drop-shadow(0 0 8px rgba(255,215,80,.60)) drop-shadow(0 0 18px rgba(255,205,40,.30)) drop-shadow(0 10px 30px rgba(0,0,0,.35)); }
+    .crystal:hover{
+      transform: translateY(-3px) scale(1.02);
+      filter: drop-shadow(0 0 10px rgba(134,255,158,.75)) drop-shadow(0 0 22px rgba(80,220,160,.35)) drop-shadow(0 12px 36px rgba(0,0,0,.45));
+    }
+    .crystal.gold:hover{
+      filter: drop-shadow(0 0 12px rgba(255,240,180,.95)) drop-shadow(0 0 28px rgba(255,210,90,.55)) drop-shadow(0 12px 36px rgba(0,0,0,.45));
+    }
 
-
-.crystal.small { width: 48px; height: 48px; opacity: .85; }
-.crystal.medium { width: 64px; height: 64px; }
-.crystal.gold {
-  width: 88px;
-  height: 88px;
-  color: url(#crystalGold);
-  filter: drop-shadow(0 10px 30px rgba(207, 163, 74, .35));
-}
-
-.crystal:hover { transform: translateY(-3px) scale(1.02); }
-
-:root{--bg:#020405;--accent:#86ff9e;--muted:#8fb4a0}
-html, body { height:100%; }
-body{
-  min-height:100vh;                 /* cobre a altura total */
-  background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
-}
-/* deixa o card crescer com o conteúdo */
-.card{ height:auto; min-height:unset; overflow:visible; }
-/* se houver algo como .wrap com altura fixa, remova */
-.wrap{ width:min(980px, 92vw); margin:0 auto; }
-h1{font-size:34px;margin:0 0 12px}
-p{color:var(--muted);margin:0 0 24px}
-.crystal{width:96px;height:96px;margin:20px auto;display:block;cursor:pointer;filter:drop-shadow(0 8px 30px rgba(0,0,0,.7));}
-/* botões base menores */
-.btn{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:8px 12px;                 /* ↓ menor */
-  font-size:13px;                    /* ↓ menor */
-  border-radius:10px;
-  border:1px solid #1c3d2a;
-  background:#0f2a1a;
-  color:#a8ffbf;
-  text-decoration:none;
-}
-.btn:hover{ background:#143720 }
-
-/* sociais: brancos, com borda + ícone */
-.socials{ display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-.social{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:8px 12px;
-  font-size:13px;
-  border:1px solid rgba(255,255,255,.35);
-  background:transparent;
-  color:#fff; text-decoration:none; border-radius:10px;
-}
-.social:hover{ background:rgba(255,255,255,.08) }
-.social svg{ width:16px; height:16px; }
-.mutedsmall{font-size:12px;color:#89bfa0;margin-top:18px}
-</style>
+    /* Responsivo */
+    @media (max-width:768px){
+      h1{ font-size:22px; }
+      .btn, .social{ padding:8px 10px; font-size:12px; }
+      .crystal-grid{ gap:14px; }
+      .crystal{ width:56px; height:56px; }
+      .crystal.small{ width:44px; height:44px; }
+      .crystal.gold{ width:72px; height:72px; }
+      .card{ padding:16px; border-radius:12px; margin-bottom:28px; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Definição do cristal -->
-<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
-  <defs>
-    <linearGradient id="crystalGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#89ffcf"/>
-      <stop offset="1" stop-color="#3bd0ff"/>
-    </linearGradient>
-    <linearGradient id="crystalGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F8E390"/>
-      <stop offset="1" stop-color="#CFA34A"/>
-    </linearGradient>
-    <symbol id="crystalIcon" viewBox="0 0 64 64">
-    <path d="M32 2 L46 22 L32 62 L18 22 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-    <path d="M32 10 L40 24 L32 52 L24 24 Z" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.2" stroke-linejoin="round"/>
-    <path d="M24 24 L46 22 M40 24 L18 22 M32 10 L32 2" stroke="currentColor" stroke-opacity=".35" stroke-width="1"/>
-  </symbol>
 
-  </defs>
-</svg>
-<div class="card">
- <div class="warp">
-<h1>CHRONOHEALERS</h1>
-<p>"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
- <section id="release" style="padding:30px 0; text-align:center;">
-  <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover"
-       style="max-width:320px;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6)">
-  <div style="margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-    <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
-    <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
-    <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
-    <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
-  </div>
- <div class="socials">
-  <a class="social" href="https://www.instagram.com/chronohealers/?igsh=MXh1amlrZ3d5cTR1Zg%3D%3D" target="_blank" rel="noopener">
-    <!-- Instagram -->
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <rect x="3" y="3" width="18" height="18" rx="5"></rect>
-      <circle cx="12" cy="12" r="4.2"></circle>
-      <circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"></circle>
-    </svg>
-    Instagram
-  </a>
+  <!-- Definições SVG (cristal) -->
+  <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
+    <defs>
+      <symbol id="crystalIcon" viewBox="0 0 64 64">
+        <path d="M32 2 L46 22 L32 62 L18 22 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M32 10 L40 24 L32 52 L24 24 Z" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.2" stroke-linejoin="round"/>
+        <path d="M24 24 L46 22 M40 24 L18 22 M32 10 L32 2" stroke="currentColor" stroke-opacity=".35" stroke-width="1"/>
+      </symbol>
+    </defs>
+  </svg>
 
-  <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">
-    <!-- X (Twitter) -->
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <path d="M4 4l16 16M20 4L4 20"></path>
-    </svg>
-    X.com
-  </a>
-</div>
+  <!-- Header -->
+  <header>
+    <nav>
+      <a class="brand" href="/">CHRONOHEALERS</a>
+      <div style="display:flex; gap:16px;">
+        <a href="#release">Album</a>
+        <a href="/chronologterminal">ChronoLog</a>
+        <a href="#about">The Chronohealers</a>
+      </div>
+    </nav>
+  </header>
 
-</section>
+  <!-- Conteúdo -->
+  <main class="page">
+    <div class="wrap">
+      <div class="card">
+        <h1>CHRONOHEALERS</h1>
+        <p>"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
 
-<!-- Crystal SVG (click opens the ChronoLog Terminal) -->
-<a id="crystal" aria-hidden="true" tabindex="-1">
-  <!-- SVG -->
-</a>
-<!-- grade de cristais -->
-<div class="crystal-grid" aria-hidden="true">
-  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-  <svg class="crystal small"><use href="#crystalIcon"/></svg>
-  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-  <svg class="crystal small"><use href="#crystalIcon"/></svg>
-  <svg class="crystal big"><use href="#crystalIcon"/></svg>
-  <svg class="crystal small"><use href="#crystalIcon"/></svg>
-  <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-  <svg class="crystal small"><use href="#crystalIcon"/></svg>
-  <svg class="crystal gold"><use href="#crystalIcon"/></svg> <!-- o clicável -->
-</div>
-  
-<defs>
-<linearGradient id="g" x1="0" x2="1">
-<stop offset="0" stop-color="#89ffcf" stop-opacity=".9"/>
-<stop offset="1" stop-color="#3bd0ff" stop-opacity=".6"/>
-</linearGradient>
-</defs>
-<g stroke="url(#g)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
-<path d="M32 2 L46 22 L32 62 L18 22 Z" fill="rgba(137,255,207,0.02)"/>
-<path d="M32 2 L46 22 L32 62 L18 22 Z"/>
-<path d="M32 10 L40 24 L32 52 L24 24 Z" stroke-opacity=".6"/>
-</g>
-</svg>
-</a>
+        <section id="release" class="release">
+          <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
+          <div class="buttons">
+            <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
+            <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
+            <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
+            <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
+          </div>
 
-<script>
-// Click crystal -> open terminal
-document.getElementById('crystal').addEventListener('click', ()=>{
-window.location.href = '/chronologterminal';
-});
-</script>
+          <div class="socials">
+            <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"></circle></svg>
+              Instagram
+            </a>
+            <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l16 16M20 4L4 20"></path></svg>
+              X.com
+            </a>
+          </div>
+        </section>
+
+        <!-- Grade de cristais -->
+        <div class="crystal-grid" aria-hidden="true">
+          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+          <svg class="crystal small"><use href="#crystalIcon"/></svg>
+          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+          <svg class="crystal small"><use href="#crystalIcon"/></svg>
+          <svg class="crystal gold"><use href="#crystalIcon"/></svg>
+          <svg class="crystal small"><use href="#crystalIcon"/></svg>
+          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+          <svg class="crystal small"><use href="#crystalIcon"/></svg>
+          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
+        </div>
+      </div>
+
+      <section id="about" class="card">
+        <h2 style="margin:0 0 10px;">The Chronohealers</h2>
+        <p class="muted">Fragments from the resonance field. More coming as the Void Protocol unfolds.</p>
+      </section>
+    </div>
+  </main>
+
   <script>
-  document.querySelectorAll('.crystal').forEach(c => {
-    c.addEventListener('click', () => {
-      if (c.classList.contains('gold')) {
-        window.location.href = '/chronologterminal';
-      } else {
-        c.style.transform = 'translateY(-1px) scale(.99)';
-        setTimeout(() => { c.style.transform = ''; }, 140);
-      }
+    // Clique do cristal dourado → ChronoLog
+    document.querySelectorAll('.crystal').forEach(c=>{
+      c.addEventListener('click', ()=>{
+        if(c.classList.contains('gold')){
+          window.location.href = '/chronologterminal';
+        }
+      });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
