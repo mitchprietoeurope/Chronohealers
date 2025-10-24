@@ -17,7 +17,7 @@
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
 
-    <header>
+  <header>
   <nav>
     <a class="brand" href="/">CHRONOHEALERS</a>
     <div class="menu">
@@ -26,6 +26,7 @@
     </div>
   </nav>
 </header>
+
 
     nav{ max-width:1100px; margin:0 auto; padding:10px 16px;
          display:flex; align-items:center; justify-content:space-between; }
@@ -135,6 +136,78 @@
 @media (max-width: 640px){
   .release-copy{ max-width: 85vw; }
   .release img{ max-width: 85vw; }
+}
+    /* ——— HEADER / NAV ——— */
+header{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5,10,12,.6);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(134,255,158,.08);
+}
+nav{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+nav a{ text-decoration: none; }
+nav .brand{
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+nav .menu{ display:flex; gap:16px; }
+nav .menu a{ color: #8fb4a0; }
+
+/* mobile: evita encavalamento */
+@media (max-width: 640px){
+  nav{ flex-direction: column; gap: 8px; padding: 8px 12px; }
+  nav .brand{ font-size: 14px; }
+  nav .menu a{ font-size: 13px; }
+}
+    /* Espaços verticais mais folgados no bloco do álbum */
+.release{ text-align:center; padding: 10px 0 0; }
+
+/* título + texto da mesma largura da capa */
+.hero-title{ margin: 0 0 12px; text-align: center; }
+.release-copy{
+  max-width: 320px;           /* acompanha a largura da capa */
+  margin: 0 auto 20px;        /* um pouco mais de espaço abaixo do texto */
+  color: var(--muted);
+  line-height: 1.45;
+  text-align: center;         /* troque pra 'justify' se preferir */
+}
+
+/* capa do álbum */
+.release img{
+  max-width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  margin-bottom: 16px;        /* espaço entre a capa e os botões */
+}
+
+/* botões de plataforma */
+.buttons{
+  margin-top: 12px;           /* espaço acima dos botões */
+  margin-bottom: 12px;        /* espaço abaixo dos botões (antes das redes) */
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+}
+
+/* redes sociais */
+.socials{ 
+  margin-top: 12px; 
+  margin-bottom: 16px;        /* dá um respiro antes dos cristais */
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap; 
+}
+
+/* cristais: aumenta o espaço acima */
+.crystal-grid{
+  margin: 22px 0 30px;        /* mais espaço acima e abaixo */
 }
   </style>
 </head>
