@@ -17,13 +17,16 @@
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
 
-    /* Header fixo e discreto */
-    header{
-      position:sticky; top:0; z-index:100;
-      background: rgba(5,10,12,.6);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(134,255,158,.08);
-    }
+    <header>
+  <nav>
+    <a class="brand" href="/">CHRONOHEALERS</a>
+    <div class="menu">
+      <a href="#release">Album</a>
+      <a href="#about">The Chronohealers</a>
+    </div>
+  </nav>
+</header>
+
     nav{ max-width:1100px; margin:0 auto; padding:10px 16px;
          display:flex; align-items:center; justify-content:space-between; }
     nav a{ color:#8fb4a0; text-decoration:none; }
@@ -92,6 +95,47 @@
       .crystal.gold{ width:72px; height:72px; }
       .card{ padding:16px; border-radius:12px; margin-bottom:28px; }
     }
+    nav .menu{ display:flex; gap:16px; }
+@media (max-width: 640px){
+  nav{ flex-direction:column; gap:8px; padding:8px 12px; }
+  .brand{ font-size:14px; }
+  nav .menu a{ font-size:13px; }
+}
+    /* --- AJUSTES DE LAYOUT DO BLOCO RELEASE --- */
+
+.release{ text-align:center; padding:10px 0 0; }
+
+.hero-title{ 
+  margin:0 0 10px; 
+  text-align:center; 
+}
+
+.release-copy{
+  max-width:320px;               /* mesma largura da capa */
+  margin:0 auto 18px;            /* centraliza o parágrafo */
+  color:var(--muted);
+  line-height:1.45;
+  text-align:center;             /* se quiser deixar "justificado", troque por justify */
+}
+
+.release img{
+  max-width:320px;
+  border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+
+.buttons{ 
+  margin-top:14px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+@media (max-width: 640px){
+  .release-copy{ max-width: 85vw; }
+  .release img{ max-width: 85vw; }
+}
   </style>
 </head>
 <body>
@@ -126,14 +170,20 @@
         <h1>CHRONOHEALERS</h1>
         <p>"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
 
-        <section id="release" class="release">
-          <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
-          <div class="buttons">
-            <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
-            <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
-            <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
-            <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
-          </div>
+    <section id="release" class="release">
+  <h1 class="hero-title">CHRONOHEALERS</h1>
+  <p class="release-copy">
+    "The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.
+  </p>
+
+  <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
+
+  <div class="buttons">
+    <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
+    <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
+    <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
+    <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
+  </div>
 
           <div class="socials">
             <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">
@@ -170,13 +220,13 @@
 
   <script>
     // Clique do cristal dourado → ChronoLog
-    document.querySelectorAll('.crystal').forEach(c=>{
-      c.addEventListener('click', ()=>{
-        if(c.classList.contains('gold')){
-          window.location.href = '/chronologterminal';
-        }
-      });
-    });
+document.querySelectorAll('.crystal').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    if(c.classList.contains('gold')){
+      window.location.href = '/chronologterminal';
+    }
+  });
+});
   </script>
 </body>
 </html>
