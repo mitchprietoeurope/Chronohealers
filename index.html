@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Chronohealers</title>
-<!-- Favicon default (será sobrescrito pelo script) -->
-<link rel="icon" type="image/svg+xml" href="/assets/favicon-green.svg">
-<link rel="alternate icon" type="image/png" href="/assets/favicon-green.png">
+
+  <!-- Favicon default (Home = verde) -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon-green.svg">
+  <link rel="alternate icon" type="image/png" href="/assets/favicon-green.png">
+
   <style>
     :root{ --accent:#86ff9e; --muted:#8fb4a0; }
 
@@ -20,21 +22,37 @@
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
 
-  <header>
-  <nav>
-    <a class="brand" href="/">CHRONOHEALERS</a>
-    <div class="menu">
-      <a href="#release">Album</a>
-      <a href="#about">The Chronohealers</a>
-    </div>
-  </nav>
-</header>
-
-
-    nav{ max-width:1100px; margin:0 auto; padding:10px 16px;
-         display:flex; align-items:center; justify-content:space-between; }
-    nav a{ color:#8fb4a0; text-decoration:none; }
-    nav .brand{ color:var(--accent); font-weight:700; letter-spacing:.5px; }
+    /* HEADER / NAV */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,10,12,.6);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(134,255,158,.08);
+    }
+    nav{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+    nav a{ text-decoration: none; }
+    nav .brand{
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    nav .menu{ display:flex; gap:16px; }
+    nav .menu a{ color: #8fb4a0; }
+    @media (max-width: 640px){
+      nav{ flex-direction: column; gap: 8px; padding: 8px 12px; }
+      nav .brand{ font-size: 14px; }
+      nav .menu a{ font-size: 13px; }
+    }
 
     /* Página com respiro no topo (~3cm adaptativo) */
     main.page{ padding-top: clamp(48px, 9vh, 120px); padding-bottom: 64px; }
@@ -50,10 +68,27 @@
     h1{ font-size:34px; margin:0 0 12px; }
     p{ color:var(--muted); margin:0 0 24px; }
 
-    /* Capa + botões */
+    /* --- BLOCO RELEASE --- */
     .release{ text-align:center; padding:10px 0 0; }
-    .release img{ max-width:320px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
-    .buttons{ margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .hero-title{ margin: 0 0 12px; text-align: center; }
+    .release-copy{
+      max-width: 320px;
+      margin: 0 auto 20px;
+      color: var(--muted);
+      line-height: 1.45;
+      text-align: center; /* troque pra 'justify' se quiser */
+    }
+    .release img{
+      max-width: 320px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      margin-bottom: 16px;
+    }
+    .buttons{
+      margin-top: 12px;
+      margin-bottom: 12px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+    }
     .btn{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 12px; font-size:13px; border-radius:10px;
@@ -61,7 +96,11 @@
     }
     .btn:hover{ background:#143720; }
 
-    .socials{ display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .socials{
+      margin-top: 12px;
+      margin-bottom: 16px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+    }
     .social{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 12px; font-size:13px; border-radius:10px;
@@ -69,188 +108,116 @@
     }
     .social:hover{ background:rgba(255,255,255,.08) }
     .social svg{ width:16px; height:16px; }
-/* ——— TORRES (obelisk) ——— */
-.tower-grid{
-  display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
-  margin: 22px 0 30px;
-}
 
-/* base: verde neon suave */
-.tower{
-  width:72px; height:72px; color:#86ff9e;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
-  cursor:pointer;
-  transition: transform .16s ease, filter .25s ease, opacity .2s;
-  opacity:.95;
-}
-.tower.small{ width:48px; height:48px; opacity:.85; }
-.tower.medium{ width:64px; height:64px; }
+    /* ——— TORRES (obelisk) ——— */
+    .tower-grid{
+      display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
+      margin: 22px 0 30px;
+    }
+    .tower{
+      width:72px; height:72px; color:#86ff9e;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
+      cursor:pointer;
+      transition: transform .16s ease, filter .25s ease, opacity .2s;
+      opacity:.95;
+    }
+    .tower.small{ width:48px; height:48px; opacity:.85; }
+    .tower.medium{ width:64px; height:64px; }
 
-/* Gateway (Torre 03) dourada */
-.tower.gateway{
-  width:88px; height:88px; color:#f8e390;
-  filter:
-    drop-shadow(0 0 8px rgba(255,215,80,.60))
-    drop-shadow(0 0 18px rgba(255,205,40,.30))
-    drop-shadow(0 10px 30px rgba(0,0,0,.35));
-}
+    .tower.gateway{
+      width:88px; height:88px; color:#f8e390;
+      filter:
+        drop-shadow(0 0 8px rgba(255,215,80,.60))
+        drop-shadow(0 0 18px rgba(255,205,40,.30))
+        drop-shadow(0 10px 30px rgba(0,0,0,.35));
+    }
 
-/* animação breathe sutil */
-@keyframes towerBreathe {
-  0%,100% {
-    opacity:.96;
-    filter:
-      drop-shadow(0 0 8px rgba(134,255,158,.65))
-      drop-shadow(0 0 18px rgba(80,220,160,.30))
-      drop-shadow(0 10px 30px rgba(0,0,0,.35));
-  }
-  50% {
-    opacity:1;
-    filter:
-      drop-shadow(0 0 12px rgba(134,255,158,.9))
-      drop-shadow(0 0 26px rgba(80,220,160,.5))
-      drop-shadow(0 12px 36px rgba(0,0,0,.45));
-  }
-}
-
-/* aplica animação a todas as torres; gateway recebe glow extra no :hover */
-@media (min-width:768px){
-  .tower{ animation: towerBreathe 4.8s ease-in-out infinite; }
-  .tower:hover{
-    transform: translateY(-3px) scale(1.02);
-  }
-  .tower.gateway:hover{
-    filter:
-      drop-shadow(0 0 12px rgba(255,240,180,.95))
-      drop-shadow(0 0 28px rgba(255,210,90,.55))
-      drop-shadow(0 12px 36px rgba(0,0,0,.45));
-  }
-}
-
-/* acessibilidade: reduz movimento */
-@media (prefers-reduced-motion: reduce){
-  .tower{ animation:none !important; }
-}
-
-/* responsivo */
-@media (max-width:768px){
-  .tower{ width:56px; height:56px; }
-  .tower.small{ width:44px; height:44px; }
-  .tower.gateway{ width:72px; height:72px; }
-}
-
-/* --- AJUSTES DE LAYOUT DO BLOCO RELEASE --- */
-
-.release{ text-align:center; padding:10px 0 0; }
-
-.hero-title{ 
-  margin:0 0 10px; 
-  text-align:center; 
-}
-
-.release-copy{
-  max-width:320px;               /* mesma largura da capa */
-  margin:0 auto 18px;            /* centraliza o parágrafo */
-  color:var(--muted);
-  line-height:1.45;
-  text-align:center;             /* se quiser deixar "justificado", troque por justify */
-}
-
-.release img{
-  max-width:320px;
-  border-radius:12px;
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-}
-
-.buttons{ 
-  margin-top:14px;
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-@media (max-width: 640px){
-  .release-copy{ max-width: 85vw; }
-  .release img{ max-width: 85vw; }
-}
-    /* ——— HEADER / NAV ——— */
-header{
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(5,10,12,.6);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(134,255,158,.08);
-}
-nav{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-}
-nav a{ text-decoration: none; }
-nav .brand{
-  color: var(--accent);
-  font-weight: 700;
-  letter-spacing: .5px;
-}
-nav .menu{ display:flex; gap:16px; }
-nav .menu a{ color: #8fb4a0; }
-
-/* mobile: evita encavalamento */
-@media (max-width: 640px){
-  nav{ flex-direction: column; gap: 8px; padding: 8px 12px; }
-  nav .brand{ font-size: 14px; }
-  nav .menu a{ font-size: 13px; }
-}
-    /* Espaços verticais mais folgados no bloco do álbum */
-.release{ text-align:center; padding: 10px 0 0; }
-
-/* título + texto da mesma largura da capa */
-.hero-title{ margin: 0 0 12px; text-align: center; }
-.release-copy{
-  max-width: 320px;           /* acompanha a largura da capa */
-  margin: 0 auto 20px;        /* um pouco mais de espaço abaixo do texto */
-  color: var(--muted);
-  line-height: 1.45;
-  text-align: center;         /* troque pra 'justify' se preferir */
-}
-
-/* capa do álbum */
-.release img{
-  max-width: 320px;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.6);
-  margin-bottom: 16px;        /* espaço entre a capa e os botões */
-}
-
-/* botões de plataforma */
-.buttons{
-  margin-top: 12px;           /* espaço acima dos botões */
-  margin-bottom: 12px;        /* espaço abaixo dos botões (antes das redes) */
-  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-}
-
-/* redes sociais */
-.socials{ 
-  margin-top: 12px; 
-  margin-bottom: 16px;        /* dá um respiro antes dos cristais */
-  display:flex; gap:10px; justify-content:center; flex-wrap:wrap; 
-}
-
+    @keyframes towerBreathe {
+      0%,100% {
+        opacity:.96;
+        filter:
+          drop-shadow(0 0 8px rgba(134,255,158,.65))
+          drop-shadow(0 0 18px rgba(80,220,160,.30))
+          drop-shadow(0 10px 30px rgba(0,0,0,.35));
+      }
+      50% {
+        opacity:1;
+        filter:
+          drop-shadow(0 0 12px rgba(134,255,158,.9))
+          drop-shadow(0 0 26px rgba(80,220,160,.5))
+          drop-shadow(0 12px 36px rgba(0,0,0,.45));
+      }
+    }
+    @media (min-width:768px){
+      .tower{ animation: towerBreathe 4.8s ease-in-out infinite; }
+      .tower:hover{ transform: translateY(-3px) scale(1.02); }
+      .tower.gateway:hover{
+        filter:
+          drop-shadow(0 0 12px rgba(255,240,180,.95))
+          drop-shadow(0 0 28px rgba(255,210,90,.55))
+          drop-shadow(0 12px 36px rgba(0,0,0,.45));
+      }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .tower{ animation:none !important; }
+    }
+    @media (max-width:768px){
+      .tower{ width:56px; height:56px; }
+      .tower.small{ width:44px; height:44px; }
+      .tower.gateway{ width:72px; height:72px; }
+    }
   </style>
 </head>
+
 <body>
+
+  <!-- ====== SVG DEFS (torres) ====== -->
+  <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
+    <defs>
+      <!-- Obelisk + Pedestal (principal) -->
+      <symbol id="towerIcon" viewBox="0 0 64 64">
+        <path d="M32 4 L42 18 L42 46 L22 46 L22 18 Z"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M32 8 L39 18 L39 44 L25 44 L25 18 Z"
+              fill="none" stroke="currentColor" stroke-opacity=".6"
+              stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M32 12 L32 42"
+              stroke="currentColor" stroke-opacity=".85" stroke-width="1.8"
+              stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+
+        <path d="M18 46 L46 46 L42 58 L22 58 Z"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M22.5 50 L41.5 50 L39.5 56 L24.5 56 Z"
+              fill="none" stroke="currentColor" stroke-opacity=".6"
+              stroke-width="1.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+      </symbol>
+
+      <!-- (opcional) Slim, caso queira testar -->
+      <symbol id="towerIconSlim" viewBox="0 0 64 64">
+        <path d="M32 3 L40 18 L40 46 L24 46 L24 18 Z"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M32 7 L37 18 L37 44 L27 44 L27 18 Z"
+              fill="none" stroke="currentColor" stroke-opacity=".6"
+              stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M32 11 L32 42"
+              stroke="currentColor" stroke-opacity=".85" stroke-width="1.8"
+              stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path d="M20 46 L44 46 L41 58 L23 58 Z"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+      </symbol>
+    </defs>
+  </svg>
+  <!-- ====== /SVG DEFS ====== -->
 
   <!-- Header -->
   <header>
     <nav>
       <a class="brand" href="/">CHRONOHEALERS</a>
-      <div style="display:flex; gap:16px;">
+      <div class="menu">
         <a href="#release">Album</a>
         <a href="#about">The Chronohealers</a>
       </div>
@@ -262,19 +229,19 @@ nav .menu a{ color: #8fb4a0; }
     <div class="wrap">
       <div class="card">
         <section id="release" class="release">
-  <h1 class="hero-title">CHRONOHEALERS</h1>
-  <p class="release-copy">
-    "The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.
-  </p>
+          <h1 class="hero-title">CHRONOHEALERS</h1>
+          <p class="release-copy">
+            "The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.
+          </p>
 
-  <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
+          <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
 
-  <div class="buttons">
-    <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
-    <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
-    <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
-    <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
-  </div>
+          <div class="buttons">
+            <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
+            <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
+            <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
+            <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
+          </div>
 
           <div class="socials">
             <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">
@@ -286,83 +253,73 @@ nav .menu a{ color: #8fb4a0; }
               X.com
             </a>
           </div>
-        </section>
 
-        <section id="about" class="card">
+          <!-- Grade de TORRES -->
+          <div class="tower-grid" aria-hidden="true">
+            <svg class="tower medium"><use href="#towerIcon"/></svg>
+            <svg class="tower small"><use href="#towerIcon"/></svg>
+            <!-- TORRE 03 — Gateway (clicável) -->
+            <svg class="tower gateway"><use href="#towerIcon"/></svg>
+            <svg class="tower small"><use href="#towerIcon"/></svg>
+            <svg class="tower medium"><use href="#towerIcon"/></svg>
+            <svg class="tower small"><use href="#towerIcon"/></svg>
+            <svg class="tower medium"><use href="#towerIcon"/></svg>
+            <svg class="tower small"><use href="#towerIcon"/></svg>
+            <svg class="tower medium"><use href="#towerIcon"/></svg>
+          </div>
+        </section>
+      </div>
+
+      <section id="about" class="card">
         <h2 style="margin:0 0 10px;">The Chronohealers</h2>
         <p class="muted">Fragments from the resonance field. More coming as the Void Protocol unfolds.</p>
       </section>
     </div>
-<!-- Grade de TORRES -->
-<div class="tower-grid" aria-hidden="true">
-  <svg class="tower medium"><use href="#towerIcon"/></svg>
-  <svg class="tower small"><use href="#towerIcon"/></svg>
-  <!-- TORRE 03 — Gateway -->
-  <svg class="tower gateway"><use href="#towerIcon"/></svg>
-  <svg class="tower small"><use href="#towerIcon"/></svg>
-  <svg class="tower medium"><use href="#towerIcon"/></svg>
-  <svg class="tower small"><use href="#towerIcon"/></svg>
-  <svg class="tower medium"><use href="#towerIcon"/></svg>
-  <svg class="tower small"><use href="#towerIcon"/></svg>
-  <svg class="tower medium"><use href="#towerIcon"/></svg>
-</div>
   </main>
 
-<script>
-  function setFavicon(svgPath, pngPath){
-    // remove favicons existentes
-    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
-    // adiciona SVG
-    const svg = document.createElement("link");
-    svg.rel  = "icon";
-    svg.type = "image/svg+xml";
-    svg.href = svgPath;
-    document.head.appendChild(svg);
-    // fallback PNG (opcional)
-    if (pngPath){
-      const png = document.createElement("link");
-      png.rel  = "alternate icon";
-      png.type = "image/png";
-      png.href = pngPath;
-      document.head.appendChild(png);
+  <!-- Favicons dinâmicos: Home=verde, ChronoLog=dourado -->
+  <script>
+    function setFavicon(svgPath, pngPath){
+      document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+      const svg = document.createElement("link");
+      svg.rel  = "icon";
+      svg.type = "image/svg+xml";
+      svg.href = svgPath;
+      document.head.appendChild(svg);
+      if (pngPath){
+        const png = document.createElement("link");
+        png.rel  = "alternate icon";
+        png.type = "image/png";
+        png.href = pngPath;
+        document.head.appendChild(png);
+      }
     }
-  }
-
-  function applyFaviconByPath(){
-    const path = location.pathname.toLowerCase();
-    const isTerminal = path.startsWith("/chronologterminal");
-    if (isTerminal){
-      // ChronoLog = dourado
-      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
-    } else {
-      // Home e demais = verde
-      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+    function applyFaviconByPath(){
+      const path = location.pathname.toLowerCase();
+      const isTerminal = path.startsWith("/chronologterminal");
+      if (isTerminal){
+        setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");   // dourado
+      } else {
+        setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png"); // verde
+      }
     }
-  }
+    document.addEventListener("DOMContentLoaded", applyFaviconByPath);
+    window.addEventListener("popstate", applyFaviconByPath);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") applyFaviconByPath();
+    });
 
-  // aplica ao carregar
-  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
-  // re-aplica se mudar de histórico (caso haja navegação interna)
-  window.addEventListener("popstate", applyFaviconByPath);
-  // e quando a aba volta a ficar visível (garante pós-cache)
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") applyFaviconByPath();
-  });
-</script>
-
-<symbol id="towerIconSlim" viewBox="0 0 64 64">
-  <path d="M32 3 L40 18 L40 46 L24 46 L24 18 Z"
-        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <path d="M32 7 L37 18 L37 44 L27 44 L27 18 Z"
-        fill="none" stroke="currentColor" stroke-opacity=".6" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <path d="M32 11 L32 42"
-        stroke="currentColor" stroke-opacity=".85" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <path d="M20 46 L44 46 L41 58 L23 58 Z"
-        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-</symbol>
-
-    
-  </defs>
-</svg>
+    // Clique na TORRE 03 (gateway) → ChronoLog
+    document.addEventListener("DOMContentLoaded", () => {
+      const gateway = document.querySelector(".tower.gateway");
+      if (gateway){
+        gateway.style.cursor = "pointer";
+        gateway.addEventListener("click", () => {
+          window.location.href = "/chronologterminal";
+        });
+      }
+    });
+  </script>
 </body>
 </html>
+
