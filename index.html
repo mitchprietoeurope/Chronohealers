@@ -69,43 +69,77 @@
     }
     .social:hover{ background:rgba(255,255,255,.08) }
     .social svg{ width:16px; height:16px; }
-
-    /* Cristais */
-    .crystal-grid{ display:flex; flex-wrap:wrap; gap:18px; justify-content:center; margin:18px 0 28px; }
-    .crystal{
-      width:72px; height:72px; color:#86ff9e;
-      filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
-      cursor:pointer; transition: transform .16s ease, filter .25s ease, opacity .2s; opacity:.95;
-    }
-    .crystal.small{ width:48px; height:48px; opacity:.85; }
-    .crystal.medium{ width:64px; height:64px; }
-    .crystal.gold{ width:88px; height:88px; color:#f8e390;
-      filter: drop-shadow(0 0 8px rgba(255,215,80,.60)) drop-shadow(0 0 18px rgba(255,205,40,.30)) drop-shadow(0 10px 30px rgba(0,0,0,.35)); }
-    .crystal:hover{
-      transform: translateY(-3px) scale(1.02);
-      filter: drop-shadow(0 0 10px rgba(134,255,158,.75)) drop-shadow(0 0 22px rgba(80,220,160,.35)) drop-shadow(0 12px 36px rgba(0,0,0,.45));
-    }
-    .crystal.gold:hover{
-      filter: drop-shadow(0 0 12px rgba(255,240,180,.95)) drop-shadow(0 0 28px rgba(255,210,90,.55)) drop-shadow(0 12px 36px rgba(0,0,0,.45));
-    }
-
-    /* Responsivo */
-    @media (max-width:768px){
-      h1{ font-size:22px; }
-      .btn, .social{ padding:8px 10px; font-size:12px; }
-      .crystal-grid{ gap:14px; }
-      .crystal{ width:56px; height:56px; }
-      .crystal.small{ width:44px; height:44px; }
-      .crystal.gold{ width:72px; height:72px; }
-      .card{ padding:16px; border-radius:12px; margin-bottom:28px; }
-    }
-    nav .menu{ display:flex; gap:16px; }
-@media (max-width: 640px){
-  nav{ flex-direction:column; gap:8px; padding:8px 12px; }
-  .brand{ font-size:14px; }
-  nav .menu a{ font-size:13px; }
+/* ——— TORRES (obelisk) ——— */
+.tower-grid{
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
+  margin: 22px 0 30px;
 }
-    /* --- AJUSTES DE LAYOUT DO BLOCO RELEASE --- */
+
+/* base: verde neon suave */
+.tower{
+  width:72px; height:72px; color:#86ff9e;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
+  cursor:pointer;
+  transition: transform .16s ease, filter .25s ease, opacity .2s;
+  opacity:.95;
+}
+.tower.small{ width:48px; height:48px; opacity:.85; }
+.tower.medium{ width:64px; height:64px; }
+
+/* Gateway (Torre 03) dourada */
+.tower.gateway{
+  width:88px; height:88px; color:#f8e390;
+  filter:
+    drop-shadow(0 0 8px rgba(255,215,80,.60))
+    drop-shadow(0 0 18px rgba(255,205,40,.30))
+    drop-shadow(0 10px 30px rgba(0,0,0,.35));
+}
+
+/* animação breathe sutil */
+@keyframes towerBreathe {
+  0%,100% {
+    opacity:.96;
+    filter:
+      drop-shadow(0 0 8px rgba(134,255,158,.65))
+      drop-shadow(0 0 18px rgba(80,220,160,.30))
+      drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  }
+  50% {
+    opacity:1;
+    filter:
+      drop-shadow(0 0 12px rgba(134,255,158,.9))
+      drop-shadow(0 0 26px rgba(80,220,160,.5))
+      drop-shadow(0 12px 36px rgba(0,0,0,.45));
+  }
+}
+
+/* aplica animação a todas as torres; gateway recebe glow extra no :hover */
+@media (min-width:768px){
+  .tower{ animation: towerBreathe 4.8s ease-in-out infinite; }
+  .tower:hover{
+    transform: translateY(-3px) scale(1.02);
+  }
+  .tower.gateway:hover{
+    filter:
+      drop-shadow(0 0 12px rgba(255,240,180,.95))
+      drop-shadow(0 0 28px rgba(255,210,90,.55))
+      drop-shadow(0 12px 36px rgba(0,0,0,.45));
+  }
+}
+
+/* acessibilidade: reduz movimento */
+@media (prefers-reduced-motion: reduce){
+  .tower{ animation:none !important; }
+}
+
+/* responsivo */
+@media (max-width:768px){
+  .tower{ width:56px; height:56px; }
+  .tower.small{ width:44px; height:44px; }
+  .tower.gateway{ width:72px; height:72px; }
+}
+
+/* --- AJUSTES DE LAYOUT DO BLOCO RELEASE --- */
 
 .release{ text-align:center; padding:10px 0 0; }
 
