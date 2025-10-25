@@ -299,5 +299,31 @@ document.querySelectorAll('.crystal').forEach(c=>{
   });
 });
   </script>
+  <script>
+function setFavicon(path) {
+  document.querySelectorAll("link[rel*='icon']").forEach(e => e.remove());
+  const link = document.createElement("link");
+  link.rel = "icon";
+  link.href = path;
+  document.head.appendChild(link);
+}
+
+/* Quando o cristal dourado é clicado → troca o favicon */
+document.addEventListener("DOMContentLoaded", () => {
+  const goldCrystal = document.querySelector(".crystal.gold");
+  if(goldCrystal){
+    goldCrystal.addEventListener("click", () => {
+      setFavicon("/assets/favicon-green.svg");
+      // (opcional) estado persistente até recarregar:
+      sessionStorage.setItem("portalOpen", "1");
+    });
+  }
+
+  // Se a sessão já está "no portal", aplica o verde automaticamente
+  if(sessionStorage.getItem("portalOpen") === "1"){
+    setFavicon("/assets/favicon-green.svg");
+  }
+});
+</script>
 </body>
 </html>
