@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ChronoLog Terminal</title>
+  <!-- Favicon default (será sobrescrito pelo script) -->
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-green.svg">
+<link rel="alternate icon" type="image/png" href="/assets/favicon-green.png">
   <style>
     :root{--bg:#010204;--accent:#86ff9e;--muted:#8fb4a0}
     html,body{height:100%;margin:0;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;background:linear-gradient(180deg,#050708,#020204);color:var(--accent)}
@@ -183,6 +186,47 @@
     await boot();
     input.focus();
   })();
+</script>
+<script>
+  function setFavicon(svgPath, pngPath){
+    // remove favicons existentes
+    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+    // adiciona SVG
+    const svg = document.createElement("link");
+    svg.rel  = "icon";
+    svg.type = "image/svg+xml";
+    svg.href = svgPath;
+    document.head.appendChild(svg);
+    // fallback PNG (opcional)
+    if (pngPath){
+      const png = document.createElement("link");
+      png.rel  = "alternate icon";
+      png.type = "image/png";
+      png.href = pngPath;
+      document.head.appendChild(png);
+    }
+  }
+
+  function applyFaviconByPath(){
+    const path = location.pathname.toLowerCase();
+    const isTerminal = path.startsWith("/chronologterminal");
+    if (isTerminal){
+      // ChronoLog = dourado
+      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
+    } else {
+      // Home e demais = verde
+      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+    }
+  }
+
+  // aplica ao carregar
+  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
+  // re-aplica se mudar de histórico (caso haja navegação interna)
+  window.addEventListener("popstate", applyFaviconByPath);
+  // e quando a aba volta a ficar visível (garante pós-cache)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") applyFaviconByPath();
+  });
 </script>
 </body>
 </html>
