@@ -340,5 +340,18 @@ document.querySelectorAll('.crystal').forEach(c=>{
     if (document.visibilityState === "visible") applyFaviconByPath();
   });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Seleciona o terceiro cristal / torre (o que queremos tornar clicável)
+  const entryTower = document.querySelectorAll(".crystal")[2]; // índice 2 = terceiro
+
+  if(entryTower){
+    entryTower.style.cursor = "pointer";
+    entryTower.addEventListener("click", () => {
+      window.location.href = "/chronologterminal";
+    });
+  }
+});
+</script>
 </body>
 </html>
