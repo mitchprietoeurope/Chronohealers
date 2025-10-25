@@ -166,6 +166,21 @@
       .tower.small{ width:44px; height:44px; }
       .tower.gateway{ width:72px; height:72px; }
     }
+    @keyframes towerFloat {
+  0%, 100% { transform: translateY(-1px); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* combina breathe + float em telas médias pra cima */
+@media (min-width:768px){
+  .tower{
+    animation:
+      towerBreathe 4.8s ease-in-out infinite,
+      towerFloat   5.8s ease-in-out infinite;
+  }
+  /* mantém teu hover por cima da animação */
+  .tower:hover{ transform: translateY(-6px) scale(1.02); }
+}
   </style>
 </head>
 
@@ -175,20 +190,45 @@
   <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
     <defs>
            <!-- (opcional) Slim, caso queira testar -->
-      <symbol id="towerIconSlim" viewBox="0 0 64 64">
-        <path d="M32 3 L40 18 L40 46 L24 46 L24 18 Z"
-              fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-        <path d="M32 7 L37 18 L37 44 L27 44 L27 18 Z"
-              fill="none" stroke="currentColor" stroke-opacity=".6"
-              stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-        <path d="M32 11 L32 42"
-              stroke="currentColor" stroke-opacity=".85" stroke-width="1.8"
-              stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-        <path d="M20 46 L44 46 L41 58 L23 58 Z"
-              fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-      </symbol>
+     <symbol id="towerIconFloat" viewBox="0 0 64 64">
+  <!-- sombra/underglow no chão (bem sutil) -->
+  <ellipse cx="32" cy="60" rx="11" ry="3"
+           fill="currentColor" opacity=".18" />
+
+  <!-- contorno do obelisk (facetas) -->
+  <path d="M32 6
+           L42 16
+           L46 30
+           L32 58
+           L18 30
+           L22 16 Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"/>
+
+  <!-- linhas internas (inset facet) -->
+  <path d="M32 10 L39 18 L42 30 L32 52 L22 30 L25 18 Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-opacity=".6"
+        stroke-width="1.6"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"/>
+
+  <!-- runa/traço central -->
+  <path d="M32 15 L32 40
+           M28.5 23 L32 19 L35.5 23
+           M30.8 34 L33.2 34"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"
+        stroke-opacity=".85"/>
+</symbol>
     </defs>
   </svg>
   <!-- ====== /SVG DEFS ====== -->
@@ -234,19 +274,18 @@
             </a>
           </div>
 
-          <!-- Grade de TORRES -->
-          <div class="tower-grid" aria-hidden="true">
-            <svg class="tower big"><use href="#towerIcon"/></svg>
-            <svg class="tower small"><use href="#towerIcon"/></svg>
-            <!-- TORRE 03 — Gateway (clicável) -->
-            <svg class="tower gateway"><use href="#towerIcon"/></svg>
-            <svg class="tower small"><use href="#towerIcon"/></svg>
-            <svg class="tower medium"><use href="#towerIcon"/></svg>
-            <svg class="tower small"><use href="#towerIcon"/></svg>
-            <svg class="tower medium"><use href="#towerIcon"/></svg>
-            <svg class="tower small"><use href="#towerIcon"/></svg>
-            <svg class="tower medium"><use href="#towerIcon"/></svg>
-          </div>
+     <div class="tower-grid" aria-hidden="true">
+  <svg class="tower medium"><use href="#towerIconFloat"/></svg>
+  <svg class="tower small"><use href="#towerIconFloat"/></svg>
+  <!-- TORRE 03 — Gateway (clicável) -->
+  <svg class="tower gateway"><use href="#towerIconFloat"/></svg>
+  <svg class="tower small"><use href="#towerIconFloat"/></svg>
+  <svg class="tower medium"><use href="#towerIconFloat"/></svg>
+  <svg class="tower small"><use href="#towerIconFloat"/></svg>
+  <svg class="tower medium"><use href="#towerIconFloat"/></svg>
+  <svg class="tower small"><use href="#towerIconFloat"/></svg>
+  <svg class="tower medium"><use href="#towerIconFloat"/></svg>
+</div>
         </section>
       </div>
 
