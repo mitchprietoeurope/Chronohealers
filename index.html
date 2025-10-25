@@ -299,32 +299,46 @@ document.querySelectorAll('.crystal').forEach(c=>{
     }
   });
 });
-  </script>
-  <script>
-function setFavicon(path) {
-  document.querySelectorAll("link[rel*='icon']").forEach(e => e.remove());
-  const link = document.createElement("link");
-  link.rel = "icon";
-  link.href = path;
-  document.head.appendChild(link);
-}
-
-/* Quando o cristal dourado é clicado → troca o favicon */
-document.addEventListener("DOMContentLoaded", () => {
-  const goldCrystal = document.querySelector(".crystal.gold");
-  if(goldCrystal){
-    goldCrystal.addEventListener("click", () => {
-      setFavicon("/assets/favicon-green.svg");
-      // (opcional) estado persistente até recarregar:
-      sessionStorage.setItem("portalOpen", "1");
-    });
+<script>
+  function setFavicon(svgPath, pngPath){
+    // remove favicons existentes
+    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+    // adiciona SVG
+    const svg = document.createElement("link");
+    svg.rel  = "icon";
+    svg.type = "image/svg+xml";
+    svg.href = svgPath;
+    document.head.appendChild(svg);
+    // fallback PNG (opcional)
+    if (pngPath){
+      const png = document.createElement("link");
+      png.rel  = "alternate icon";
+      png.type = "image/png";
+      png.href = pngPath;
+      document.head.appendChild(png);
+    }
   }
 
-  // Se a sessão já está "no portal", aplica o verde automaticamente
-  if(sessionStorage.getItem("portalOpen") === "1"){
-    setFavicon("/assets/favicon-green.svg");
+  function applyFaviconByPath(){
+    const path = location.pathname.toLowerCase();
+    const isTerminal = path.startsWith("/chronologterminal");
+    if (isTerminal){
+      // ChronoLog = dourado
+      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
+    } else {
+      // Home e demais = verde
+      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+    }
   }
-});
+
+  // aplica ao carregar
+  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
+  // re-aplica se mudar de histórico (caso haja navegação interna)
+  window.addEventListener("popstate", applyFaviconByPath);
+  // e quando a aba volta a ficar visível (garante pós-cache)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") applyFaviconByPath();
+  });
 </script>
 </body>
 </html>
