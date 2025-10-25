@@ -242,10 +242,6 @@ nav .menu a{ color: #8fb4a0; }
   display:flex; gap:10px; justify-content:center; flex-wrap:wrap; 
 }
 
-/* cristais: aumenta o espaço acima */
-.crystal-grid{
-  margin: 22px 0 30px;        /* mais espaço acima e abaixo */
-}
   </style>
 </head>
 <body>
@@ -312,15 +308,6 @@ nav .menu a{ color: #8fb4a0; }
 </div>
   </main>
 
-  <script>
-    // Clique do cristal dourado → ChronoLog
-document.querySelectorAll('.crystal').forEach(c=>{
-  c.addEventListener('click', ()=>{
-    if(c.classList.contains('gold')){
-      window.location.href = '/chronologterminal';
-    }
-  });
-});
 <script>
   function setFavicon(svgPath, pngPath){
     // remove favicons existentes
@@ -362,20 +349,8 @@ document.querySelectorAll('.crystal').forEach(c=>{
     if (document.visibilityState === "visible") applyFaviconByPath();
   });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Seleciona o terceiro cristal / torre (o que queremos tornar clicável)
-  const entryTower = document.querySelectorAll(".crystal")[2]; // índice 2 = terceiro
 
-  if(entryTower){
-    entryTower.style.cursor = "pointer";
-    entryTower.addEventListener("click", () => {
-      window.location.href = "/chronologterminal";
-    });
-  }
-});
-</script>
-<!-- Definições SVG — TORRES (obelisks) -->
+  <!-- Definições SVG — TORRES (obelisks) -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
   <defs>
     <!-- Obelisk minimal sci-fi -->
