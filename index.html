@@ -353,20 +353,21 @@ nav .menu a{ color: #8fb4a0; }
   <!-- Definições SVG — TORRES (obelisks) -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
   <defs>
-  <symbol id="towerIcon" viewBox="0 0 64 64">
-  <!-- corpo facetado -->
-  <path d="M32 2 L46 16 L46 58 L18 58 L18 16 Z"
+ <symbol id="towerIcon" viewBox="0 0 64 64">
+  <!-- paredes externas -->
+  <path d="M24 6 L40 6 L46 18 L46 58 L18 58 L18 18 Z"
         fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-  <!-- eixo de energia -->
-  <path d="M32 10 L32 50" stroke="currentColor" stroke-opacity=".8" stroke-width="1.8"/>
-  <!-- facetas internas -->
-  <path d="M22 22 L42 22 M24 34 L40 34"
-        stroke="currentColor" stroke-opacity=".4" stroke-width="1"/>
-  <path d="M30 16 L26 28 M34 16 L38 28"
+  <!-- fenda central (porta / gateway) -->
+  <path d="M32 10 L32 52" stroke="currentColor" stroke-width="2.2" />
+  <!-- travessas -->
+  <path d="M20 24 L44 24 M22 38 L42 38"
         stroke="currentColor" stroke-opacity=".35" stroke-width="1"/>
+  <!-- topo chanfrado -->
+  <path d="M24 6 L32 2 L40 6" stroke="currentColor" stroke-width="2" fill="none"/>
   <!-- base -->
   <path d="M18 58 L46 58" stroke="currentColor" stroke-width="2"/>
 </symbol>
+
   </defs>
 </svg>
 </body>
