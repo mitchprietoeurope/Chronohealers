@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente dourado -->
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8E390"/>
+      <stop offset="1" stop-color="#CFA34A"/>
+    </linearGradient>
+
+    <!-- Glow suave -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Glow forte (usado no pico da animação) -->
+    <filter id="pulseGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="3.6">
+        <!-- anima levemente o blur -->
+        <animate attributeName="stdDeviation" values="3.6;5.2;3.6" dur="4.8s" repeatCount="indefinite"/>
+      </feGaussianBlur>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* animação muito sutil de opacidade */
+    @keyframes breathe {
+      0%,100% { opacity: .96; }
+      50%     { opacity: 1;   }
+    }
+    .g { animation: breathe 4.8s ease-in-out infinite; }
+    /* acessibilidade: desliga movimento se o usuário preferir */
+    @media (prefers-reduced-motion: reduce) {
+      .g { animation: none; }
+    }
+  </style>
+
+  <!-- Fundo transparente (nada aqui) -->
+
+  <!-- Cristal dourado -->
+  <g class="g" stroke="url(#gold)" stroke-linejoin="round" stroke-linecap="round">
+    <!-- contorno externo -->
+    <g filter="url(#softGlow)">
+      <path d="M128 14 L198 118 L128 242 L58 118 Z" stroke-width="5"/>
+    </g>
+
+    <!-- contorno interno -->
+    <g filter="url(#pulseGlow)">
+      <path d="M128 44 L168 122 L128 220 L88 122 Z" stroke-width="4" stroke-opacity=".9"/>
+    </g>
+
+    <!-- detalhes internos (linhas) -->
+    <g filter="url(#softGlow)" stroke-opacity=".5">
+      <path d="M88 122 L198 118" stroke-width="2"/>
+      <path d="M168 122 L58 118" stroke-width="2"/>
+      <path d="M128 44 L128 14"   stroke-width="2"/>
+    </g>
+  </g>
+</svg>
