@@ -269,21 +269,7 @@ nav .menu a{ color: #8fb4a0; }
           </div>
         </section>
 
-        <!-- Grade de cristais -->
-        <div class="crystal-grid" aria-hidden="true">
-          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-          <svg class="crystal small"><use href="#crystalIcon"/></svg>
-          <svg class="crystal gold"><use href="#crystalIcon"/></svg>
-          <svg class="crystal small"><use href="#crystalIcon"/></svg>
-          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-          <svg class="crystal small"><use href="#crystalIcon"/></svg>
-          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-          <svg class="crystal small"><use href="#crystalIcon"/></svg>
-          <svg class="crystal medium"><use href="#crystalIcon"/></svg>
-        </div>
-      </div>
-
-      <section id="about" class="card">
+        <section id="about" class="card">
         <h2 style="margin:0 0 10px;">The Chronohealers</h2>
         <p class="muted">Fragments from the resonance field. More coming as the Void Protocol unfolds.</p>
       </section>
@@ -353,5 +339,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+<!-- Definições SVG — TORRES (obelisks) -->
+<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
+  <defs>
+    <!-- Obelisk minimal sci-fi -->
+    <symbol id="towerIcon" viewBox="0 0 64 64">
+      <!-- corpo -->
+      <path d="M32 2 L48 18 L48 58 L16 58 L16 18 Z"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <!-- canal de energia -->
+      <path d="M32 10 L32 50" stroke="currentColor" stroke-width="1.6" stroke-opacity=".7" />
+      <!-- detalhes internos sutis -->
+      <path d="M20 22 L44 22 M24 34 L40 34"
+            stroke="currentColor" stroke-opacity=".35" stroke-width="1"/>
+      <!-- base -->
+      <path d="M16 58 L48 58" stroke="currentColor" stroke-width="2"/>
+    </symbol>
+  </defs>
+</svg>
 </body>
 </html>
