@@ -6,8 +6,8 @@
   <title>Chronohealers</title>
 
   <!-- Favicon default (Home = verde) -->
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon-green.svg">
-  <link rel="alternate icon" type="image/png" href="/assets/favicon-green.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon-green_v2.svg">
+  <link rel="alternate icon" type="image/png" href="/assets/favicon-green_v2.png">
 
   <style>
     :root{ --accent:#86ff9e; --muted:#8fb4a0; }
@@ -235,7 +235,7 @@
 </main>
 
 <script>
-  // Favicon dinâmico
+  //  dinâmico
   function setFavicon(svgPath, pngPath){
     document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
     const svg = document.createElement("link");
@@ -255,9 +255,9 @@
     const path = location.pathname.toLowerCase();
     const isTerminal = path.startsWith("/chronologterminal");
     if (isTerminal){
-      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
+      setFavicon("/assets/favicon_v2.svg", "/assets/favicon_v2.png");
     } else {
-      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+      setFavicon("/assets/favicon-green_v2.svg", "/assets/favicon-green_v2.png");
     }
   }
   document.addEventListener("DOMContentLoaded", applyFaviconByPath);
