@@ -181,45 +181,22 @@
 
 <body>
 
-<!-- ===== Spire Tower symbol ===== -->
-<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
-  <defs>
-    <!-- Torre agulha: outline + facetas internas -->
-    <symbol id="towerSpire" viewBox="0 0 64 160">
-      <!-- sombra/névoa no pé -->
-      <ellipse cx="32" cy="154" rx="16" ry="4" fill="currentColor" opacity=".14"/>
-
-      <!-- contorno externo da espira (irregular, alta e afilada) -->
-      <path d="
-        M32 2
-        L36 10 L35 20 L38 28 L36 38 
-        L40 48 L38 60 L41 70 L39 86 
-        L42 96 L39 110 L41 120 L38 132 
-        L34 140 L32 156 
-        L30 140 L26 132 L23 120 L25 110 
-        L22 96 L25 86 L23 70 L26 60 
-        L24 48 L28 38 L26 28 L29 20 
-        L28 10 Z"
-        fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
+<!-- Torre “agulha” invertida (assimétrica) -->
+<<!-- Torre “agulha” invertida (assimétrica) -->
+<symbol id="towerIconNeedle" viewBox="0 0 80 240">
+  <path d="M40 4 L60 66 L68 120 L60 194 L40 236 L20 194 L12 120 L20 66 Z"
+        fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"
         vector-effect="non-scaling-stroke"/>
-
-      <!-- facetas internas (ridges) -->
-      <path d="M32 8  L33 20  L31 32  L33 44  L31 58  L33 74  L31 92  L33 108 L31 126 L32 148"
-            fill="none" stroke="currentColor" stroke-width="1.4" stroke-opacity=".9"
-            stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-      <path d="M28 22 L30 34 L28 50 L30 66 L28 88 L30 104 L28 122"
-            fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"
-            vector-effect="non-scaling-stroke"/>
-      <path d="M36 18 L34 30 L36 46 L34 64 L36 84 L34 102 L36 124"
-            fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"
-            vector-effect="non-scaling-stroke"/>
-
-      <!-- “feixe” sutil no ápice -->
-      <path d="M32 2 L32 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
-    </symbol>
-  </defs>
-</svg>
-<!-- ===== /Spire Tower symbol ===== -->
+  <path d="M40 14 L54 72 L58 120 L54 188 L40 226"
+        fill="none" stroke="currentColor" stroke-opacity=".70" stroke-width="1.8"
+        stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  <path d="M40 18 L46 76 L48 120 L46 192 L40 224"
+        fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.6"
+        stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  <path d="M40 22 L40 218"
+        stroke="currentColor" stroke-opacity=".85" stroke-width="1.6"
+        stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+</symbol>
 
   <!-- Header -->
   <header>
@@ -263,18 +240,16 @@
           </div>
 
 <div class="tower-grid" aria-hidden="true">
-  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
-  <svg class="tower spire small"><use href="#towerSpire"/></svg>
-
+  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
   <!-- TORRE 03 — Gateway (clicável) -->
-  <svg class="tower spire gateway" id="tower-03"><use href="#towerSpire"/></svg>
-
-  <svg class="tower spire small"><use href="#towerSpire"/></svg>
-  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
-  <svg class="tower spire small"><use href="#towerSpire"/></svg>
-  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
-  <svg class="tower spire small"><use href="#towerSpire"/></svg>
-  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
+  <svg class="tower gateway"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
 </div>
 
         </section>
