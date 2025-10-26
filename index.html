@@ -265,17 +265,14 @@
         window.location.href = "/chronologterminal";
       });
 
-    // começa verde
-gateway.classList.remove("gateway");
-
-function flashOn(){
-  gateway.classList.add("gateway");
-  setTimeout(() => gateway.classList.remove("gateway"), ON_MS);
-}
-
-// inicia ciclo SEM flash inicial
-setTimeout(() => flashOn(), CYCLE);
-setInterval(flashOn, CYCLE);
+      // OPCIONAL: piscar dourado por 5s a cada 15s (comente se não quiser)
+      const ON_MS = 5000, CYCLE = 15000;
+      function flashOn(){
+        gateway.classList.add("gateway");
+        setTimeout(()=>gateway.classList.remove("gateway"), ON_MS);
+      }
+      flashOn();
+      setInterval(flashOn, CYCLE);
     }
   });
 </script>
