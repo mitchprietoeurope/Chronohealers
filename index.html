@@ -78,7 +78,10 @@
     }
     .tower.gateway{ color:#f8e390; } /* só cor; sem mudar tamanho */
 
-    @keyframes towerPulse { 0%,100%{opacity:.75;} 50%{opacity:1;} }
+   @keyframes towerPulse{
+  0%,100% { opacity:.85; }
+  50%     { opacity:1;   }
+}
   /* grade */
 .tower-grid{
   display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
@@ -86,12 +89,15 @@
 }
 
 /* tamanhos */
-.tower{ width:72px; height:72px; color:#86ff9e; opacity:.95; }
-.tower.small{ width:48px; height:48px; opacity:.85; }
-.tower.medium{ width:64px; height:64px; }
+.tower{ width:108px; height:108px; }
+.tower.small{ width:72px; height:72px; }
+.tower.medium{ width:96px; height:96px; }
 
 /* gateway: mesma dimensão (sem aumentar), apenas cor */
-.tower.gateway{ color:#f8e390; }
+.tower.gateway{
+  color:#f8e390; /* só cor */
+}
+
 
 /* light pulse */
 @keyframes pulse {
@@ -264,14 +270,17 @@
         window.location.href = "/chronologterminal";
       });
 
-      // Piscar dourado por 5s a cada 15s
-      const ON_MS = 5000, CYCLE = 15000;
-      function flashOn(){
-        gateway.classList.add("gateway");
-        setTimeout(()=>gateway.classList.remove("gateway"), ON_MS);
-      }
-      flashOn();
-      setInterval(flashOn, CYCLE);
+    // começa verde
+gateway.classList.remove("gateway");
+
+function flashOn(){
+  gateway.classList.add("gateway");
+  setTimeout(() => gateway.classList.remove("gateway"), ON_MS);
+}
+
+// inicia ciclo SEM flash inicial
+setTimeout(() => flashOn(), CYCLE);
+setInterval(flashOn, CYCLE);
     }
   });
 </script>
