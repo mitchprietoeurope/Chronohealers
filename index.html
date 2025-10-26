@@ -104,57 +104,67 @@
     .social:hover{ background:rgba(255,255,255,.08) }
     .social svg{ width:16px; height:16px; }
 
-    /* TORRES */
+    /* --- TORRES CRISTAL --- */
     .tower-grid{
       display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
       margin: 22px 0 30px;
     }
     .tower{
-      width:72px; height:72px; color:#86ff9e;
-      filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
+      width:70px; height:70px; color:#86ff9e;
       cursor:pointer;
-      transition: transform .16s ease, filter .25s ease, opacity .2s;
       opacity:.95;
+      transition: filter .4s ease, opacity .4s ease;
     }
     .tower.small{ width:48px; height:48px; opacity:.85; }
     .tower.medium{ width:64px; height:64px; }
-    .tower.gateway{
-      width:88px; height:88px; color:#f8e390;
-      filter:
-        drop-shadow(0 0 8px rgba(255,215,80,.60))
-        drop-shadow(0 0 18px rgba(255,205,40,.30))
-        drop-shadow(0 10px 30px rgba(0,0,0,.35));
-    }
 
-    @keyframes towerBreathe {
-      0%,100% { opacity:.96; }
-      50% { opacity:1; transform: translateY(-2px); }
+    /* Torre dourada (gateway) — mesmo tamanho */
+    .tower.gateway{ color:#f8e390; }
+
+    /* animação de pulsação suave */
+    @keyframes towerPulse {
+      0%,100% { opacity: .9; filter: drop-shadow(0 0 6px rgba(134,255,158,.45)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 16px rgba(134,255,158,.9)); }
     }
     @media (min-width:768px){
-      .tower{ animation: towerBreathe 4.8s ease-in-out infinite; }
-      .tower:hover{ transform: translateY(-3px) scale(1.02); }
+      .tower{ animation: towerPulse 5s ease-in-out infinite; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ✅ SVG DEFS (correto e funcional) -->
+  <!-- SVG DEFS -->
   <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
     <defs>
-      <symbol id="towerIconNeedle" viewBox="0 0 80 240">
-        <path d="M40 4 L60 66 L68 120 L60 194 L40 236 L20 194 L12 120 L20 66 Z"
-              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"
-              vector-effect="non-scaling-stroke"/>
-        <path d="M40 14 L54 72 L58 120 L54 188 L40 226"
-              fill="none" stroke="currentColor" stroke-opacity=".70" stroke-width="1.8"
-              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-        <path d="M40 18 L46 76 L48 120 L46 192 L40 224"
-              fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.6"
-              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-        <path d="M40 22 L40 218"
-              stroke="currentColor" stroke-opacity=".85" stroke-width="1.6"
-              stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <!-- Torre cristal inspirada na imagem -->
+      <symbol id="towerCrystal" viewBox="0 0 80 240">
+        <path d="M40 5 L55 50 L68 100 L60 160 L45 220 L40 235 L35 220 L20 160 L12 100 L25 50 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke" />
+        <path d="M40 10 L50 50 L60 100 L52 160 L40 220 L28 160 L20 100 L30 50 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-opacity=".65"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke" />
+        <path d="M40 20 L45 60 L48 100 L45 160 L40 210 L35 160 L32 100 L35 60 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-opacity=".45"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke" />
+        <path d="M40 25 L40 210"
+              stroke="currentColor"
+              stroke-opacity=".85"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              vector-effect="non-scaling-stroke" />
       </symbol>
     </defs>
   </svg>
@@ -193,17 +203,18 @@
             <a class="social" href="https://x.com/Chronohealers" target="_blank">X.com</a>
           </div>
 
-          <!-- ✅ Grade de TORRES -->
+          <!-- Grade de Torres -->
           <div class="tower-grid" aria-hidden="true">
-            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower gateway"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower medium"><use href="#towerCrystal"/></svg>
+            <svg class="tower small"><use href="#towerCrystal"/></svg>
+            <!-- Torre 03 clicável -->
+            <svg class="tower gateway" id="gatewayTower"><use href="#towerCrystal"/></svg>
+            <svg class="tower small"><use href="#towerCrystal"/></svg>
+            <svg class="tower medium"><use href="#towerCrystal"/></svg>
+            <svg class="tower small"><use href="#towerCrystal"/></svg>
+            <svg class="tower medium"><use href="#towerCrystal"/></svg>
+            <svg class="tower small"><use href="#towerCrystal"/></svg>
+            <svg class="tower medium"><use href="#towerCrystal"/></svg>
           </div>
         </section>
       </div>
@@ -222,6 +233,7 @@
 
   <!-- Scripts -->
   <script>
+    // Favicon dinâmico
     function setFavicon(svgPath, pngPath){
       document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
       const svg = document.createElement("link");
@@ -237,6 +249,7 @@
         document.head.appendChild(png);
       }
     }
+
     function applyFaviconByPath(){
       const path = location.pathname.toLowerCase();
       const isTerminal = path.startsWith("/chronologterminal");
@@ -252,19 +265,24 @@
       if (document.visibilityState === "visible") applyFaviconByPath();
     });
 
-    // Torre 03 pisca dourada
+    // Torre 03 — clique e piscar dourada
     document.addEventListener("DOMContentLoaded", () => {
-      const towers = document.querySelectorAll(".tower-grid .tower");
-      const target = towers[2];
-      if (!target) return;
+      const gateway = document.getElementById("gatewayTower");
+      if (!gateway) return;
 
+      // Clique → Chronolog Terminal
+      gateway.addEventListener("click", () => {
+        window.location.href = "/chronologterminal";
+      });
+
+      // Brilho temporário a cada 15s
       const ON_DURATION = 5000;
       const CYCLE = 15000;
       let timerOn, timerCycle;
 
       function flashOn(){
-        target.classList.add("gateway");
-        timerOn = setTimeout(() => target.classList.remove("gateway"), ON_DURATION);
+        gateway.classList.add("gateway");
+        timerOn = setTimeout(() => gateway.classList.remove("gateway"), ON_DURATION);
       }
 
       flashOn();
