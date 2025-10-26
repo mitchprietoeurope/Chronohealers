@@ -12,7 +12,6 @@
   <style>
     :root{ --accent:#86ff9e; --muted:#8fb4a0; }
 
-    /* Fundo cobrindo tudo */
     html, body { height:100%; }
     body{
       margin:0;
@@ -41,20 +40,16 @@
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
     nav a{ text-decoration: none; }
-    nav .brand{
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: .5px;
-    }
+    nav .brand{ color: var(--accent); font-weight: 700; letter-spacing: .5px; }
     nav .menu{ display:flex; gap:16px; }
     nav .menu a{ color: #8fb4a0; }
+
     @media (max-width: 640px){
       nav{ flex-direction: column; gap: 8px; padding: 8px 12px; }
       nav .brand{ font-size: 14px; }
       nav .menu a{ font-size: 13px; }
     }
 
-    /* Página com respiro no topo (~3cm adaptativo) */
     main.page{ padding-top: clamp(48px, 9vh, 120px); padding-bottom: 64px; }
 
     .wrap{ width:min(980px, 92vw); margin:0 auto; }
@@ -76,7 +71,7 @@
       margin: 0 auto 20px;
       color: var(--muted);
       line-height: 1.45;
-      text-align: center; /* troque pra 'justify' se quiser */
+      text-align: center;
     }
     .release img{
       max-width: 320px;
@@ -109,29 +104,60 @@
     .social:hover{ background:rgba(255,255,255,.08) }
     .social svg{ width:16px; height:16px; }
 
-<svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+    /* TORRES */
+    .tower-grid{
+      display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
+      margin: 22px 0 30px;
+    }
+    .tower{
+      width:72px; height:72px; color:#86ff9e;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
+      cursor:pointer;
+      transition: transform .16s ease, filter .25s ease, opacity .2s;
+      opacity:.95;
+    }
+    .tower.small{ width:48px; height:48px; opacity:.85; }
+    .tower.medium{ width:64px; height:64px; }
+    .tower.gateway{
+      width:88px; height:88px; color:#f8e390;
+      filter:
+        drop-shadow(0 0 8px rgba(255,215,80,.60))
+        drop-shadow(0 0 18px rgba(255,205,40,.30))
+        drop-shadow(0 10px 30px rgba(0,0,0,.35));
+    }
 
+    @keyframes towerBreathe {
+      0%,100% { opacity:.96; }
+      50% { opacity:1; transform: translateY(-2px); }
+    }
+    @media (min-width:768px){
+      .tower{ animation: towerBreathe 4.8s ease-in-out infinite; }
+      .tower:hover{ transform: translateY(-3px) scale(1.02); }
+    }
   </style>
 </head>
 
 <body>
 
-<!-- Torre “agulha” invertida (assimétrica) -->
-<<!-- Torre “agulha” invertida (assimétrica) -->
-<symbol id="towerIconNeedle" viewBox="0 0 80 240">
-  <path d="M40 4 L60 66 L68 120 L60 194 L40 236 L20 194 L12 120 L20 66 Z"
-        fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"
-        vector-effect="non-scaling-stroke"/>
-  <path d="M40 14 L54 72 L58 120 L54 188 L40 226"
-        fill="none" stroke="currentColor" stroke-opacity=".70" stroke-width="1.8"
-        stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <path d="M40 18 L46 76 L48 120 L46 192 L40 224"
-        fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.6"
-        stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <path d="M40 22 L40 218"
-        stroke="currentColor" stroke-opacity=".85" stroke-width="1.6"
-        stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-</symbol>
+  <!-- ✅ SVG DEFS (correto e funcional) -->
+  <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
+    <defs>
+      <symbol id="towerIconNeedle" viewBox="0 0 80 240">
+        <path d="M40 4 L60 66 L68 120 L60 194 L40 236 L20 194 L12 120 L20 66 Z"
+              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"
+              vector-effect="non-scaling-stroke"/>
+        <path d="M40 14 L54 72 L58 120 L54 188 L40 226"
+              fill="none" stroke="currentColor" stroke-opacity=".70" stroke-width="1.8"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M40 18 L46 76 L48 120 L46 192 L40 224"
+              fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.6"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        <path d="M40 22 L40 218"
+              stroke="currentColor" stroke-opacity=".85" stroke-width="1.6"
+              stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      </symbol>
+    </defs>
+  </svg>
 
   <!-- Header -->
   <header>
@@ -144,7 +170,6 @@
     </nav>
   </header>
 
-  <!-- Conteúdo -->
   <main class="page">
     <div class="wrap">
       <div class="card">
@@ -157,51 +182,45 @@
           <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
 
           <div class="buttons">
-            <a class="btn" href="https://open.spotify.com/album/SEU_ID" target="_blank" rel="noopener">Spotify</a>
-            <a class="btn" href="https://music.apple.com/album/SEU_ID" target="_blank" rel="noopener">Apple Music</a>
-            <a class="btn" href="https://music.amazon.com/albums/SEU_ID" target="_blank" rel="noopener">Amazon Music</a>
-            <a class="btn" href="https://music.youtube.com/playlist?list=SEU_ID" target="_blank" rel="noopener">YouTube Music</a>
+            <a class="btn" href="#">Spotify</a>
+            <a class="btn" href="#">Apple Music</a>
+            <a class="btn" href="#">Amazon Music</a>
+            <a class="btn" href="#">YouTube Music</a>
           </div>
 
           <div class="socials">
-            <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"></circle></svg>
-              Instagram
-            </a>
-            <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l16 16M20 4L4 20"></path></svg>
-              X.com
-            </a>
+            <a class="social" href="https://www.instagram.com/chronohealers" target="_blank">Instagram</a>
+            <a class="social" href="https://x.com/Chronohealers" target="_blank">X.com</a>
           </div>
 
-<div class="tower-grid" aria-hidden="true">
-  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-  <!-- TORRE 03 — Gateway (clicável) -->
-  <svg class="tower gateway"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower small"><use href="#towerIconNeedle"/></svg>
-  <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
-</div>
-
+          <!-- ✅ Grade de TORRES -->
+          <div class="tower-grid" aria-hidden="true">
+            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower gateway"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower small"><use href="#towerIconNeedle"/></svg>
+            <svg class="tower medium"><use href="#towerIconNeedle"/></svg>
+          </div>
         </section>
       </div>
 
       <section id="about" class="card">
-        <h2 style="margin:0 0 10px;">The Chronohealers</h2>
-        <p class="muted">Those who heal time know memory is not a record — it’s a key.
-We remain awake while others drift into the hollow of forgetting.
-Only the ones who listen can feel the echo pulling back through layers.
-Remember: when the golden tower appears — follow.
-</p>
+        <h2>The Chronohealers</h2>
+        <p class="muted">
+          Those who heal time know memory is not a record — it’s a key.<br>
+          We remain awake while others drift into the hollow of forgetting.<br>
+          Only the ones who listen can feel the echo pulling back through layers.<br>
+          Remember: when the golden tower appears — follow.
+        </p>
       </section>
     </div>
   </main>
 
-  <!-- Favicons dinâmicos: Home=verde, ChronoLog=dourado -->
+  <!-- Scripts -->
   <script>
     function setFavicon(svgPath, pngPath){
       document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
@@ -222,9 +241,9 @@ Remember: when the golden tower appears — follow.
       const path = location.pathname.toLowerCase();
       const isTerminal = path.startsWith("/chronologterminal");
       if (isTerminal){
-        setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");   // dourado
+        setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
       } else {
-        setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png"); // verde
+        setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
       }
     }
     document.addEventListener("DOMContentLoaded", applyFaviconByPath);
@@ -233,49 +252,24 @@ Remember: when the golden tower appears — follow.
       if (document.visibilityState === "visible") applyFaviconByPath();
     });
 
-    // Clique na TORRE 03 (gateway) → ChronoLog
+    // Torre 03 pisca dourada
     document.addEventListener("DOMContentLoaded", () => {
-      const gateway = document.querySelector(".tower.gateway");
-      if (gateway){
-        gateway.style.cursor = "pointer";
-        gateway.addEventListener("click", () => {
-          window.location.href = "/chronologterminal";
-        });
+      const towers = document.querySelectorAll(".tower-grid .tower");
+      const target = towers[2];
+      if (!target) return;
+
+      const ON_DURATION = 5000;
+      const CYCLE = 15000;
+      let timerOn, timerCycle;
+
+      function flashOn(){
+        target.classList.add("gateway");
+        timerOn = setTimeout(() => target.classList.remove("gateway"), ON_DURATION);
       }
+
+      flashOn();
+      timerCycle = setInterval(flashOn, CYCLE);
     });
   </script>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  // 3ª torre visual (dentro do <a>)
-  const towers = document.querySelectorAll(".tower-grid .tower");
-  const target = towers[2]; // índice 0,1,2 → terceira
-
-  if (!target) return;
-
-  const ON_DURATION  = 5000;  // 5s dourado
-  const CYCLE        = 15000; // a cada 15s
-  let timerOn, timerCycle;
-
-  function flashOn(){
-    target.classList.add("gateway");       // fica dourada
-    timerOn = setTimeout(() => {
-      target.classList.remove("gateway");  // volta ao verde
-    }, ON_DURATION);
-  }
-
-  // dispara agora e depois a cada ciclo
-  flashOn();
-  timerCycle = setInterval(flashOn, CYCLE);
-
-  // (opcional) respeita prefers-reduced-motion: não pisca se usuário não curte animações
-  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (media.matches){
-    clearInterval(timerCycle);
-    clearTimeout(timerOn);
-    target.classList.remove("gateway"); // fica estável no verde
-  }
-});
-</script>
 </body>
 </html>
-
