@@ -66,10 +66,15 @@
     .social:hover{ background:rgba(255,255,255,.08) }
 
     /* --- TORRES --- */
-    .tower-grid{
-      display:flex; gap:18px; justify-content:center;
-      margin:24px 0;
-    }
+   /* grade – menos espaço entre as torres */
+.tower-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;           /* era 18px */
+  justify-content:center;
+  margin:18px 0 24px;/* pode reduzir um pouco a margem também */
+}
+
     .tower{
       width:64px; height:64px; color:#86ff9e;
       cursor:pointer; opacity:.9;
@@ -122,6 +127,9 @@
 @media (max-width:768px){
   .tower{ width:56px; height:56px; }
   .tower.small{ width:44px; height:44px; }
+}/* engrossa levemente os traços da torre */
+.tower path{
+  stroke-width: 5px !important; /* ajuste fino: 4.5–5.5 */
 }
 </style>
 </head>
