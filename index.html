@@ -109,58 +109,44 @@
     .social:hover{ background:rgba(255,255,255,.08) }
     .social svg{ width:16px; height:16px; }
 
-    /* ——— TORRES (obelisk) ——— */
-  /* grid */
+ /* grade */
 .tower-grid{
   display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
   margin:22px 0 30px;
 }
 
-/* pilares altos com fill */
+/* base: verde neon suave */
 .tower{
-  --pillarFill: url(#pillarFillGreen);     /* default verde */
-  width:72px; height:120px;                /* proporção vertical */
+  width:72px; height:108px;           /* 64x96 do viewBox + sombra */
   color:#86ff9e;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,.6));
-  cursor:pointer; opacity:.95;
+  cursor:pointer;
   transition: transform .16s ease, filter .25s ease, opacity .2s;
+  opacity:.95;
 }
-.tower.small{ width:48px; height:96px; opacity:.85; }
-.tower.medium{ width:64px; height:110px; }
+.tower.small{ width:48px;  height:82px;  opacity:.85; }
+.tower.medium{width:64px;  height:98px; }
 
-/* gateway dourada + brilho mais forte */
+/* Gateway (dourado) */
 .tower.gateway{
-  --pillarFill: url(#pillarFillGold);
   color:#f8e390;
   filter:
-    drop-shadow(0 0 8px rgba(255,215,80,.60))
+    drop-shadow(0 0 8px  rgba(255,215,80,.60))
     drop-shadow(0 0 18px rgba(255,205,40,.30))
     drop-shadow(0 10px 30px rgba(0,0,0,.35));
 }
 
-/* animações */
-@keyframes towerBreathe {
-  0%,100% {
-    opacity:.96;
-    filter:
-      drop-shadow(0 0 8px rgba(134,255,158,.55))
-      drop-shadow(0 0 18px rgba(80,220,160,.25))
-      drop-shadow(0 10px 30px rgba(0,0,0,.35));
-  }
-  50% {
-    opacity:1;
-    filter:
-      drop-shadow(0 0 12px rgba(134,255,158,.85))
-      drop-shadow(0 0 26px rgba(80,220,160,.45))
-      drop-shadow(0 12px 36px rgba(0,0,0,.45));
-  }
+/* respiração + flutuação sutil (desktop) */
+@keyframes towerBreathe{
+  0%,100%{ opacity:.96; filter:drop-shadow(0 0 8px rgba(134,255,158,.65)) drop-shadow(0 0 18px rgba(80,220,160,.30)) drop-shadow(0 10px 30px rgba(0,0,0,.35)); }
+  50%    { opacity:1;   filter:drop-shadow(0 0 12px rgba(134,255,158,.9))  drop-shadow(0 0 26px rgba(80,220,160,.5))  drop-shadow(0 12px 36px rgba(0,0,0,.45)); }
+}
+@keyframes towerFloat{
+  0%,100% { transform: translateY(-1px); }
+  50%     { transform: translateY(-5px); }
 }
 @media (min-width:768px){
-  .tower{
-    animation:
-      towerBreathe 5s ease-in-out infinite,
-      towerFloat   6s ease-in-out infinite;
-  }
+  .tower{ animation: towerBreathe 4.8s ease-in-out infinite, towerFloat 5.8s ease-in-out infinite; }
   .tower:hover{ transform: translateY(-6px) scale(1.02); }
   .tower.gateway:hover{
     filter:
@@ -169,13 +155,14 @@
       drop-shadow(0 12px 36px rgba(0,0,0,.45));
   }
 }
-@media (max-width:768px){
-  .tower{ width:56px; height:100px; }
-  .tower.small{ width:44px; height:88px; }
-  .tower.gateway{ width:72px; height:116px; }
-}
 @media (prefers-reduced-motion: reduce){
   .tower{ animation:none !important; }
+}
+
+/* mobile sizes */
+@media (max-width:768px){
+  .tower{ width:56px; height:92px; }
+  .tower.small{ width:44px; height:76px; }
 }
 
   </style>
@@ -183,63 +170,40 @@
 
 <body>
 
-<!-- ====== SVG DEFS (torres) ====== -->
+<!-- ===== SVG DEFS ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
   <defs>
-    <!-- fills -->
-    <linearGradient id="pillarFillGreen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#86ff9e"/>
-      <stop offset="100%" stop-color="#3aa96e"/>
-    </linearGradient>
-    <linearGradient id="pillarFillGold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#f9e59c"/>
-      <stop offset="100%" stop-color="#cfa34a"/>
-    </linearGradient>
-
-    <!-- glow interno -->
-    <radialGradient id="innerGlowGreen" cx="50%" cy="28%" r="65%">
-      <stop offset="0%"  stop-color="#b8ffd1" stop-opacity=".85"/>
-      <stop offset="60%" stop-color="#86ff9e" stop-opacity=".25"/>
-      <stop offset="100%" stop-color="#86ff9e" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="innerGlowGold" cx="50%" cy="28%" r="65%">
-      <stop offset="0%"  stop-color="#fff2c7" stop-opacity=".9"/>
-      <stop offset="60%" stop-color="#f6d779" stop-opacity=".28"/>
-      <stop offset="100%" stop-color="#f6d779" stop-opacity="0"/>
-    </radialGradient>
-
-    <!-- textura sutil -->
-    <filter id="stoneNoise" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n"/>
-      <feColorMatrix in="n" type="saturate" values="0" result="g"/>
-      <feComponentTransfer in="g" result="gn">
-        <feFuncA type="table" tableValues="0 0.05"/>
-      </feComponentTransfer>
-      <feBlend in="SourceGraphic" in2="gn" mode="multiply"/>
-    </filter>
-    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="2" />
-    </filter>
-
-    <!-- Ícone do Pilar (alto) -->
-    <!-- usa var(--pillarFill) pra alternar verde/dourado -->
-    <symbol id="pillarIcon" viewBox="0 0 64 120">
-      <ellipse cx="32" cy="110" rx="10" ry="3" fill="currentColor" opacity=".15"/>
-      <path d="M32 4 L48 24 L48 94 L16 94 L16 24 Z"
+    <!-- Torre Sentinela: topo + anel + 4 pilares -->
+    <symbol id="sentinelTower" viewBox="0 0 64 96">
+      <!-- cúpula -->
+      <path d="M16 18 Q32 8 48 18 Q48 28 32 32 Q16 28 16 18 Z"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M32 8 L44 24 L44 90 L20 90 L20 24 Z"
-            style="fill:var(--pillarFill, url(#pillarFillGreen))" filter="url(#stoneNoise)"/>
-      <path d="M32 8 L44 24 L44 90 L20 90 L20 24 Z"
-            fill="url(#innerGlowGreen)" filter="url(#softGlow)"/>
-      <path d="M32 26 L32 76 M28 46 L36 46 M29.2 60 L34.8 60"
-            fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" stroke-opacity=".85"/>
+      <!-- coroa superior (antenas minimalistas) -->
+      <g stroke="currentColor" stroke-width="1.6">
+        <line x1="20" y1="12" x2="20" y2="18"/>
+        <line x1="24" y1="10" x2="24" y2="17"/>
+        <line x1="28" y1="9"  x2="28" y2="16"/>
+        <line x1="32" y1="8"  x2="32" y2="16"/>
+        <line x1="36" y1="9"  x2="36" y2="16"/>
+        <line x1="40" y1="10" x2="40" y2="17"/>
+        <line x1="44" y1="12" x2="44" y2="18"/>
+      </g>
+      <!-- anel -->
+      <rect x="14" y="32" width="36" height="8" rx="2"
+            fill="none" stroke="currentColor" stroke-width="2"/>
+      <!-- pilares (4 barras; a central levemente mais grossa) -->
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M18 40 V86" stroke-width="3"/>
+        <path d="M28 40 V86" stroke-width="3.5"/>
+        <path d="M36 40 V86" stroke-width="3.5"/>
+        <path d="M46 40 V86" stroke-width="3"/>
+      </g>
+      <!-- leve base/sombra -->
+      <ellipse cx="32" cy="90" rx="12" ry="3" fill="currentColor" opacity=".18"/>
     </symbol>
   </defs>
 </svg>
-<!-- ====== /SVG DEFS ====== -->
-
-  </svg>
-  <!-- ====== /SVG DEFS ====== -->
+<!-- ===== /SVG DEFS ===== -->
 
   <!-- Header -->
   <header>
@@ -282,21 +246,21 @@
             </a>
           </div>
 
-     <div class="tower-grid" aria-hidden="true">
-  <svg class="tower medium"><use href="#pillarIcon"/></svg>
-  <svg class="tower small"><use href="#pillarIcon"/></svg>
+<div class="tower-grid" aria-hidden="true">
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
 
-  <!-- TORRE 03 — Gateway (link real) -->
+  <!-- Torre 03 (Gateway) — o link fica no <a>; cor alterna via JS -->
   <a href="/chronologterminal" aria-label="Gateway Access">
-    <svg class="tower gateway"><use href="#pillarIcon"/></svg>
+    <svg class="tower"><use href="#sentinelTower"/></svg>
   </a>
 
-  <svg class="tower small"><use href="#pillarIcon"/></svg>
-  <svg class="tower medium"><use href="#pillarIcon"/></svg>
-  <svg class="tower small"><use href="#pillarIcon"/></svg>
-  <svg class="tower medium"><use href="#pillarIcon"/></svg>
-  <svg class="tower small"><use href="#pillarIcon"/></svg>
-  <svg class="tower medium"><use href="#pillarIcon"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower medium"><use href="#sentinelTower"/></svg>
 </div>
 
         </section>
