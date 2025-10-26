@@ -79,7 +79,45 @@
     .tower.gateway{ color:#f8e390; } /* só cor; sem mudar tamanho */
 
     @keyframes towerPulse { 0%,100%{opacity:.75;} 50%{opacity:1;} }
-  </style>
+  /* grade */
+.tower-grid{
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:center;
+  margin: 22px 0 30px;
+}
+
+/* tamanhos */
+.tower{ width:72px; height:72px; color:#86ff9e; opacity:.95; }
+.tower.small{ width:48px; height:48px; opacity:.85; }
+.tower.medium{ width:64px; height:64px; }
+
+/* gateway: mesma dimensão (sem aumentar), apenas cor */
+.tower.gateway{ color:#f8e390; }
+
+/* light pulse */
+@keyframes pulse {
+  0%,100% { opacity:.92; filter:none; }
+  50%     { opacity:1;   filter: drop-shadow(0 0 10px rgba(134,255,158,.35)); }
+}
+@keyframes pulseGold {
+  0%,100% { opacity:.94; filter:none; }
+  50%     { opacity:1;   filter: drop-shadow(0 0 12px rgba(255,210,90,.35)); }
+}
+
+/* aplica só o pulso */
+.tower{ animation: pulse 4.8s ease-in-out infinite; }
+.tower.gateway{ animation: pulseGold 4.8s ease-in-out infinite; }
+
+/* acessibilidade: reduz movimento */
+@media (prefers-reduced-motion: reduce){
+  .tower, .tower.gateway{ animation:none !important; }
+}
+
+/* responsivo */
+@media (max-width:768px){
+  .tower{ width:56px; height:56px; }
+  .tower.small{ width:44px; height:44px; }
+}
+</style>
 </head>
 
 <body>
@@ -153,18 +191,18 @@
 
         <!-- GRADE DE TORRES -->
         <div class="tower-grid">
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
 
           <!-- TORRE 03 — gateway (clicável) -->
-          <svg class="tower" id="gatewayTower"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium" id="gatewayTower"><use href="#towerCrystal"/></svg>
 
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
-          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
+          <svg class="tower medium"><use href="#towerCrystal"/></svg>
         </div>
       </section>
     </div>
