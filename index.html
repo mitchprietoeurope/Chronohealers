@@ -132,6 +132,10 @@
 .tower.gateway{
   --pillarFill: url(#pillarFillGold);
   color:#f8e390;
+  filter:
+    drop-shadow(0 0 8px rgba(255,215,80,.60))
+    drop-shadow(0 0 18px rgba(255,205,40,.30))
+    drop-shadow(0 10px 30px rgba(0,0,0,.35));
 }
 
 /* animações */
@@ -352,6 +356,38 @@ Remember: when the golden tower appears — follow.
       }
     });
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 3ª torre visual (dentro do <a>)
+  const towers = document.querySelectorAll(".tower-grid .tower");
+  const target = towers[2]; // índice 0,1,2 → terceira
+
+  if (!target) return;
+
+  const ON_DURATION  = 5000;  // 5s dourado
+  const CYCLE        = 15000; // a cada 15s
+  let timerOn, timerCycle;
+
+  function flashOn(){
+    target.classList.add("gateway");       // fica dourada
+    timerOn = setTimeout(() => {
+      target.classList.remove("gateway");  // volta ao verde
+    }, ON_DURATION);
+  }
+
+  // dispara agora e depois a cada ciclo
+  flashOn();
+  timerCycle = setInterval(flashOn, CYCLE);
+
+  // (opcional) respeita prefers-reduced-motion: não pisca se usuário não curte animações
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (media.matches){
+    clearInterval(timerCycle);
+    clearTimeout(timerOn);
+    target.classList.remove("gateway"); // fica estável no verde
+  }
+});
+</script>
 </body>
 </html>
 
