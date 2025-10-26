@@ -20,7 +20,71 @@
       color: var(--accent);
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
-<!-- ===== tower-crystal (a partir do seu SVG) ===== -->
+
+    header{
+      position: sticky; top:0; z-index:100;
+      background: rgba(5,10,12,.6);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(134,255,158,.08);
+    }
+    nav{
+      max-width: 1100px; margin: 0 auto; padding: 10px 16px;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    nav a{ text-decoration:none; color:#8fb4a0; }
+    nav .brand{ color:var(--accent); font-weight:700; }
+    nav .menu{ display:flex; gap:16px; }
+
+    @media(max-width:640px){
+      nav{ flex-direction:column; gap:8px; }
+      nav .brand{ font-size:14px; }
+      nav .menu a{ font-size:13px; }
+    }
+
+    main.page{ padding-top:clamp(48px,9vh,120px); padding-bottom:64px; }
+    .wrap{ width:min(980px,92vw); margin:0 auto; }
+    .card{
+      background:linear-gradient(180deg,#0d1417 0%,#091114 100%);
+      border:1px solid #1b2b30; border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 120px rgba(134,255,158,.05);
+      padding:24px; margin-bottom:48px;
+    }
+
+    .release{ text-align:center; }
+    .release img{ max-width:320px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
+    .hero-title{ margin:0 0 12px; }
+    .release-copy{
+      max-width:320px; margin:0 auto 20px; color:var(--muted); line-height:1.45; text-align:center;
+    }
+
+    .buttons{ margin:14px 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .btn{ padding:8px 12px; border-radius:10px; border:1px solid #1c3d2a; background:#0f2a1a; color:#a8ffbf; text-decoration:none; }
+    .btn:hover{ background:#143720; }
+
+    .socials{ margin-top:12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .social{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; font-size:13px; border-radius:10px; border:1px solid rgba(255,255,255,.35); color:#fff; text-decoration:none; }
+    .social:hover{ background:rgba(255,255,255,.08) }
+
+    /* --- TORRES --- */
+    .tower-grid{
+      display:flex; gap:18px; justify-content:center;
+      margin:24px 0;
+    }
+    .tower{
+      width:64px; height:64px; color:#86ff9e;
+      cursor:pointer; opacity:.9;
+      animation:towerPulse 3.2s ease-in-out infinite;
+      transition:opacity .2s;
+    }
+    .tower.gateway{ color:#f8e390; } /* só cor; sem mudar tamanho */
+
+    @keyframes towerPulse { 0%,100%{opacity:.75;} 50%{opacity:1;} }
+  </style>
+</head>
+
+<body>
+
+<!-- ===== tower-crystal (seu SVG, como symbol reutilizável) ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
   <defs>
     <symbol id="towerCrystal" viewBox="0 0 810 809.999993">
@@ -55,73 +119,6 @@
   </defs>
 </svg>
 
-    header{
-      position: sticky; top:0; z-index:100;
-      background: rgba(5,10,12,.6);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(134,255,158,.08);
-    }
-    nav{
-      max-width: 1100px; margin: 0 auto; padding: 10px 16px;
-      display:flex; justify-content:space-between; align-items:center;
-    }
-    nav a{ text-decoration:none; color:#8fb4a0; }
-    nav .brand{ color:var(--accent); font-weight:700; }
-    nav .menu{ display:flex; gap:16px; }
-
-    @media(max-width:640px){
-      nav{ flex-direction:column; gap:8px; }
-    }
-
-    main.page{ padding-top:clamp(48px,9vh,120px); padding-bottom:64px; }
-    .wrap{ width:min(980px,92vw); margin:0 auto; }
-    .card{
-      background:linear-gradient(180deg,#0d1417 0%,#091114 100%);
-      border:1px solid #1b2b30; border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 120px rgba(134,255,158,.05);
-      padding:24px; margin-bottom:48px;
-    }
-
-    .release{ text-align:center; }
-    .release img{ max-width:320px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
-
-    .buttons{ margin:14px 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .btn{ padding:8px 12px; border-radius:10px; border:1px solid #1c3d2a; background:#0f2a1a; color:#a8ffbf; }
-    .btn:hover{ background:#143720; }
-
-    .socials{ margin-top:12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-
-    /* --- TORRES --- */
-    .tower-grid{
-      display:flex; gap:18px; justify-content:center;
-      margin:24px 0;
-    }
-
-    .tower{
-      width:64px; height:64px; color:#86ff9e;
-      cursor:pointer; opacity:.9;
-      animation:towerPulse 3.2s ease-in-out infinite;
-      transition:opacity .2s;
-    }
-    .tower.gateway{ color:#f8e390; }
-
-    @keyframes towerPulse{ 0%,100%{opacity:.75;}50%{opacity:1;} }
-
-  </style>
-</head>
-
-<body>
-
-<!-- símbolo SVG DA TORRE -->
-<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
-<defs>
-  <symbol id="towerCrystal" viewBox="0 0 810 810">
-    <!-- TODO: SEU SVG VAI EXATAMENTE AQUI -->
-    <!-- (cole o conteúdo que te passei anteriormente, sem modificar nada) -->
-  </symbol>
-</defs>
-</svg>
-
 <header>
   <nav>
     <a class="brand" href="/">CHRONOHEALERS</a>
@@ -133,62 +130,109 @@
 </header>
 
 <main class="page">
-<div class="wrap">
+  <div class="wrap">
 
-  <div class="card">
-  <section id="release" class="release">
+    <div class="card">
+      <section id="release" class="release">
+        <h1 class="hero-title">CHRONOHEALERS</h1>
+        <p class="release-copy">"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
 
-      <h1 class="hero-title">CHRONOHEALERS</h1>
-      <p class="release-copy">"The Shape of Emptiness" — an immersive sonic transmission.</p>
+        <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
 
-      <img src="/assets/cover.jpg">
+        <div class="buttons">
+          <a class="btn" href="#">Spotify</a>
+          <a class="btn" href="#">Apple Music</a>
+          <a class="btn" href="#">Amazon Music</a>
+          <a class="btn" href="#">YouTube Music</a>
+        </div>
 
-      <div class="buttons">
-        <a class="btn" href="#">Spotify</a>
-        <a class="btn" href="#">Apple Music</a>
-        <a class="btn" href="#">Amazon Music</a>
-        <a class="btn" href="#">YouTube Music</a>
-      </div>
+        <div class="socials">
+          <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">Instagram</a>
+          <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">X.com</a>
+        </div>
 
-      <div class="socials">
-        <a class="social" href="https://www.instagram.com/chronohealers" target="_blank">Instagram</a>
-        <a class="social" href="https://x.com/Chronohealers" target="_blank">X.com</a>
-      </div>
+        <!-- GRADE DE TORRES -->
+        <div class="tower-grid">
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
 
-      <!-- GRADE DE TORRES -->
-      <div class="tower-grid">
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
+          <!-- TORRE 03 — gateway (clicável) -->
+          <svg class="tower" id="gatewayTower"><use href="#towerCrystal"/></svg>
 
-        <!-- TORRE 3 — gateway -->
-        <svg class="tower gateway" id="gatewayTower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+          <svg class="tower"><use href="#towerCrystal"/></svg>
+        </div>
+      </section>
+    </div>
 
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-        <svg class="tower"><use href="#towerCrystal"/></svg>
-      </div>
+    <section id="about" class="card">
+      <h2>The Chronohealers</h2>
+      <p class="muted">
+        Those who heal time know memory is not a record — it’s a key.<br>
+        We remain awake while others drift into the hollow of forgetting.<br>
+        Only the ones who listen can feel the echo pulling back through layers.<br>
+        Remember: when the golden tower appears — follow.
+      </p>
+    </section>
 
-  </section>
   </div>
-
-  <section id="about" class="card">
-    <h2>The Chronohealers</h2>
-    <p class="muted">Those who heal time know memory is not a record — it’s a key.</p>
-  </section>
-
-</div>
 </main>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const gateway = document.getElementById("gatewayTower");
-  if(gateway){
-    gateway.addEventListener("click", ()=> { window.location.href = "/chronologterminal"; });
+  // Favicon dinâmico
+  function setFavicon(svgPath, pngPath){
+    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+    const svg = document.createElement("link");
+    svg.rel  = "icon";
+    svg.type = "image/svg+xml";
+    svg.href = svgPath;
+    document.head.appendChild(svg);
+    if (pngPath){
+      const png = document.createElement("link");
+      png.rel  = "alternate icon";
+      png.type = "image/png";
+      png.href = pngPath;
+      document.head.appendChild(png);
+    }
   }
-});
+  function applyFaviconByPath(){
+    const path = location.pathname.toLowerCase();
+    const isTerminal = path.startsWith("/chronologterminal");
+    if (isTerminal){
+      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
+    } else {
+      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+    }
+  }
+  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
+  window.addEventListener("popstate", applyFaviconByPath);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") applyFaviconByPath();
+  });
+
+  // Torre 3 → abre ChronoLog
+  document.addEventListener("DOMContentLoaded", () => {
+    const gateway = document.getElementById("gatewayTower");
+    if (gateway){
+      gateway.style.cursor = "pointer";
+      gateway.addEventListener("click", () => {
+        window.location.href = "/chronologterminal";
+      });
+
+      // Piscar dourado por 5s a cada 15s
+      const ON_MS = 5000, CYCLE = 15000;
+      function flashOn(){
+        gateway.classList.add("gateway");
+        setTimeout(()=>gateway.classList.remove("gateway"), ON_MS);
+      }
+      flashOn();
+      setInterval(flashOn, CYCLE);
+    }
+  });
 </script>
 
 </body>
