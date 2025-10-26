@@ -136,24 +136,35 @@
     drop-shadow(0 10px 30px rgba(0,0,0,.35));
 }
 
-/* respiração + flutuação sutil (desktop) */
-@keyframes towerBreathe{
-  0%,100%{ opacity:.96; filter:drop-shadow(0 0 8px rgba(134,255,158,.65)) drop-shadow(0 0 18px rgba(80,220,160,.30)) drop-shadow(0 10px 30px rgba(0,0,0,.35)); }
-  50%    { opacity:1;   filter:drop-shadow(0 0 12px rgba(134,255,158,.9))  drop-shadow(0 0 26px rgba(80,220,160,.5))  drop-shadow(0 12px 36px rgba(0,0,0,.45)); }
+/* glow suave e animação de “breathe + float” */
+.tower.spire{
+  filter:
+    drop-shadow(0 0 10px rgba(134,255,158,.28))
+    drop-shadow(0 14px 28px rgba(0,0,0,.45));
 }
-@keyframes towerFloat{
+
+@keyframes spireBreathe {
+  0%,100% { opacity:.96; }
+  50%     { opacity:1; }
+}
+@keyframes spireFloat {
   0%,100% { transform: translateY(-1px); }
   50%     { transform: translateY(-5px); }
 }
+
 @media (min-width:768px){
-  .tower{ animation: towerBreathe 4.8s ease-in-out infinite, towerFloat 5.8s ease-in-out infinite; }
-  .tower:hover{ transform: translateY(-6px) scale(1.02); }
-  .tower.gateway:hover{
-    filter:
-      drop-shadow(0 0 12px rgba(255,240,180,.95))
-      drop-shadow(0 0 28px rgba(255,210,90,.55))
-      drop-shadow(0 12px 36px rgba(0,0,0,.45));
+  .tower.spire{
+    animation:
+      spireBreathe 4.8s ease-in-out infinite,
+      spireFloat   6.2s ease-in-out infinite;
   }
+  .tower.spire:hover{ transform: translateY(-7px) scale(1.02); }
+}
+
+/* versões de cor (você já usa) */
+.tower{ color:#86ff9e; }                 /* padrão verde */
+.tower.gateway{ color:#f8e390; }          /* dourado */
+
 }
 @media (prefers-reduced-motion: reduce){
   .tower{ animation:none !important; }
@@ -170,40 +181,45 @@
 
 <body>
 
-<!-- ===== SVG DEFS ===== -->
+<!-- ===== Spire Tower symbol ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
   <defs>
-    <!-- Torre Sentinela: topo + anel + 4 pilares -->
-    <symbol id="sentinelTower" viewBox="0 0 64 96">
-      <!-- cúpula -->
-      <path d="M16 18 Q32 8 48 18 Q48 28 32 32 Q16 28 16 18 Z"
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <!-- coroa superior (antenas minimalistas) -->
-      <g stroke="currentColor" stroke-width="1.6">
-        <line x1="20" y1="12" x2="20" y2="18"/>
-        <line x1="24" y1="10" x2="24" y2="17"/>
-        <line x1="28" y1="9"  x2="28" y2="16"/>
-        <line x1="32" y1="8"  x2="32" y2="16"/>
-        <line x1="36" y1="9"  x2="36" y2="16"/>
-        <line x1="40" y1="10" x2="40" y2="17"/>
-        <line x1="44" y1="12" x2="44" y2="18"/>
-      </g>
-      <!-- anel -->
-      <rect x="14" y="32" width="36" height="8" rx="2"
-            fill="none" stroke="currentColor" stroke-width="2"/>
-      <!-- pilares (4 barras; a central levemente mais grossa) -->
-      <g fill="none" stroke="currentColor" stroke-linecap="round">
-        <path d="M18 40 V86" stroke-width="3"/>
-        <path d="M28 40 V86" stroke-width="3.5"/>
-        <path d="M36 40 V86" stroke-width="3.5"/>
-        <path d="M46 40 V86" stroke-width="3"/>
-      </g>
-      <!-- leve base/sombra -->
-      <ellipse cx="32" cy="90" rx="12" ry="3" fill="currentColor" opacity=".18"/>
+    <!-- Torre agulha: outline + facetas internas -->
+    <symbol id="towerSpire" viewBox="0 0 64 160">
+      <!-- sombra/névoa no pé -->
+      <ellipse cx="32" cy="154" rx="16" ry="4" fill="currentColor" opacity=".14"/>
+
+      <!-- contorno externo da espira (irregular, alta e afilada) -->
+      <path d="
+        M32 2
+        L36 10 L35 20 L38 28 L36 38 
+        L40 48 L38 60 L41 70 L39 86 
+        L42 96 L39 110 L41 120 L38 132 
+        L34 140 L32 156 
+        L30 140 L26 132 L23 120 L25 110 
+        L22 96 L25 86 L23 70 L26 60 
+        L24 48 L28 38 L26 28 L29 20 
+        L28 10 Z"
+        fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"/>
+
+      <!-- facetas internas (ridges) -->
+      <path d="M32 8  L33 20  L31 32  L33 44  L31 58  L33 74  L31 92  L33 108 L31 126 L32 148"
+            fill="none" stroke="currentColor" stroke-width="1.4" stroke-opacity=".9"
+            stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <path d="M28 22 L30 34 L28 50 L30 66 L28 88 L30 104 L28 122"
+            fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"
+            vector-effect="non-scaling-stroke"/>
+      <path d="M36 18 L34 30 L36 46 L34 64 L36 84 L34 102 L36 124"
+            fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"
+            vector-effect="non-scaling-stroke"/>
+
+      <!-- “feixe” sutil no ápice -->
+      <path d="M32 2 L32 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
     </symbol>
   </defs>
 </svg>
-<!-- ===== /SVG DEFS ===== -->
+<!-- ===== /Spire Tower symbol ===== -->
 
   <!-- Header -->
   <header>
@@ -247,20 +263,18 @@
           </div>
 
 <div class="tower-grid" aria-hidden="true">
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
+  <svg class="tower spire small"><use href="#towerSpire"/></svg>
 
-  <!-- Torre 03 (Gateway) — o link fica no <a>; cor alterna via JS -->
-  <a href="/chronologterminal" aria-label="Gateway Access">
-    <svg class="tower"><use href="#sentinelTower"/></svg>
-  </a>
+  <!-- TORRE 03 — Gateway (clicável) -->
+  <svg class="tower spire gateway" id="tower-03"><use href="#towerSpire"/></svg>
 
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
-  <svg class="tower medium"><use href="#sentinelTower"/></svg>
+  <svg class="tower spire small"><use href="#towerSpire"/></svg>
+  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
+  <svg class="tower spire small"><use href="#towerSpire"/></svg>
+  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
+  <svg class="tower spire small"><use href="#towerSpire"/></svg>
+  <svg class="tower spire medium"><use href="#towerSpire"/></svg>
 </div>
 
         </section>
