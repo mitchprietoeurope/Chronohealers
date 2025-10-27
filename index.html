@@ -131,6 +131,21 @@
 .tower path{
   stroke-width: 5px !important; /* ajuste fino: 4.5–5.5 */
 }
+    /* Torna as torres “sólidas” em neon:
+   pinta os paths e engrossa o traço */
+.tower path {
+  fill: currentColor !important;         /* sobrescreve fill="none" do SVG */
+  stroke: currentColor !important;       /* mesma cor para o contorno */
+  stroke-width: 4px;                     /* ajuste de espessura */
+  stroke-linejoin: round;                /* cantos suaves */
+  stroke-linecap: round;                 /* pontas suaves */
+}
+
+/* Dourado quando a classe .gateway estiver ativa */
+.tower.gateway { color: #f8e390; }
+
+/* Se quiser mais “peso”, aumente gradualmente: 4.5px, 5px… */
+
 </style>
 </head>
 
