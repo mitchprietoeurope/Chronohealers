@@ -280,27 +280,26 @@
   });
 
   // Torre 3 → abre ChronoLog
-  document.addEventListener("DOMContentLoaded", () => {
-    const gateway = document.getElementById("gatewayTower");
-    if (gateway){
-      gateway.style.cursor = "pointer";
-      gateway.addEventListener("click", () => {
-        window.location.href = "/chronologterminal";
-      });
+const gateway = document.getElementById("gatewayTower");
+if (gateway){
+  gateway.style.cursor = "pointer";
+  gateway.addEventListener("click", () => {
+    window.location.href = "/chronologterminal";
+  });
 
-      // OPCIONAL: piscar dourado por 5s a cada 15s (comente se não quiser)
-      const ON_MS = 5000, CYCLE = 15000;
-      function flashOn(){
-      gateway.classList.remove("gateway"); // garantir estado inicial verde
-      const gateway = document.getElementById("gatewayTower");
-      if(gateway){
-      gateway.classList.remove("gateway");
+  // começa VERDE
+  gateway.classList.remove("gateway");
 
-        setTimeout(()=>gateway.classList.remove("gateway"), ON_MS);
-      }
-      flashOn();
-      setInterval(flashOn, CYCLE);
-    }
+  const ON_MS = 3000, CYCLE = 15000;
+
+  function flashOn(){
+    gateway.classList.add("gateway");                 // fica dourada
+    setTimeout(() => gateway.classList.remove("gateway"), ON_MS); // volta ao verde
+  }
+
+  flashOn();                       // dispara agora
+  setInterval(flashOn, CYCLE);     // repete a cada ciclo
+}
   });
 </script>
 
