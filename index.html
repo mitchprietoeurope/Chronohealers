@@ -145,6 +145,18 @@
 .tower.gateway { color: #f8e390; }
 
 /* Se quiser mais “peso”, aumente gradualmente: 4.5px, 5px… */
+    /* pinta e engrossa via o <use>, que herda para dentro do symbol */
+.tower use{
+  fill: currentColor;            /* dá “sólido” */
+  stroke: currentColor;          /* mantém contorno na mesma cor */
+  stroke-width: 5px;             /* ajuste: 4.5 ~ 6 se quiser mais bold */
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* cores continuam por classe */
+.tower{ color:#86ff9e; }         /* verde padrão */
+.tower.gateway{ color:#f8e390; } /* dourada quando ativa */
 
 </style>
 </head>
