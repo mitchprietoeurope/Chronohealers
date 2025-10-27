@@ -292,14 +292,24 @@ if (gateway){
 
   const ON_MS = 3000, CYCLE = 15000;
 
-  function flashOn(){
-    gateway.classList.add("gateway");                 // fica dourada
-    setTimeout(() => gateway.classList.remove("gateway"), ON_MS); // volta ao verde
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  const gateway = document.getElementById("gatewayTower");
+  if (gateway){
+    gateway.style.cursor = "pointer";
+    gateway.addEventListener("click", () => {
+      window.location.href = "/chronologterminal";
+    });
 
-  flashOn();                       // dispara agora
-  setInterval(flashOn, CYCLE);     // repete a cada ciclo
-}
+    // (opcional) Torre pisca dourado por 5s a cada 15s
+    const ON_MS = 5000, CYCLE = 15000;
+    function flashGold(){
+      gateway.classList.add("gateway");
+      setTimeout(()=> gateway.classList.remove("gateway"), ON_MS);
+    }
+    setInterval(flashGold, CYCLE);
+  }
+});
+
   });
 </script>
 
