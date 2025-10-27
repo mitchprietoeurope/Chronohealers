@@ -310,6 +310,32 @@ function makeAnimatedRingDataURL(colorHex) {
     if (document.visibilityState === "visible") applyFaviconByPath();
   });
 </script>
+<script>
+// Torre 3 → abre ChronoLog + pisca dourado
+document.addEventListener("DOMContentLoaded", () => {
+  const gateway = document.getElementById("gatewayTower");
+  if (!gateway) return;
+
+  // clique → Chronolog Terminal
+  gateway.style.cursor = "pointer";
+  gateway.addEventListener("click", () => {
+    window.location.href = "/chronologterminal";
+  });
+
+  // ficar VERDE por padrão; a cada ciclo, fica DOURADA por 5s
+  const ON_MS  = 5000;   // tempo dourada
+  const CYCLE  = 15000;  // intervalo entre os flashes
+
+  function flashOn(){
+    gateway.classList.add("gateway");                 // fica dourada
+    setTimeout(() => gateway.classList.remove("gateway"), ON_MS); // volta ao verde
+  }
+
+  // começa verde; primeiro flash após 1s (ajuste como preferir)
+  setTimeout(flashOn, 1000);
+  setInterval(flashOn, CYCLE);
+});
+</script>
 
 
 </body>
