@@ -4,30 +4,33 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ChronoLog Terminal</title>
-  <!-- Favicon default (será sobrescrito pelo script) -->
-<script>
-// gera um anel animado como Data URL
-function makeAnimatedRingDataURL(colorHex) {
-  const svg = `
+
+  <style>
+    /* estilo básico do terminal (opcional) */
+    html,body{height:100%;margin:0;background:#0b0f11;color:#86ff9e;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace}
+    #terminal{max-width:960px;margin:24px auto;padding:16px}
+    #status{color:#8fb4a0;margin-bottom:8px}
+    #screen{min-height:320px;border:1px solid #183126;border-radius:10px;padding:12px;overflow:auto;background:#0d1417;box-shadow:inset 0 0 80px rgba(134,255,158,.05)}
+    form#cmd{margin-top:10px;display:flex;gap:8px}
+    #input{flex:1;background:#0f2a1a;color:#a8ffbf;border:1px solid #1c3d2a;border-radius:8px;padding:8px}
+  </style>
+
+  <script>
+    // ---------- FAVICON: anel animado (dourado) ----------
+    function makeAnimatedRingDataURL(colorHex){
+      const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <style>
     circle { transform-box: fill-box; transform-origin: 50% 50%; }
     .ring-base {
-      fill: none;
-      stroke: ${colorHex};
-      stroke-width: 6;
-      opacity: 0.9;
+      fill: none; stroke: ${colorHex}; stroke-width: 6; opacity: .9;
       filter: drop-shadow(0 0 6px ${colorHex}80);
     }
     .ring-glow {
-      fill: none;
-      stroke: ${colorHex};
-      stroke-width: 10;
-      stroke-linecap: round;
+      fill: none; stroke: ${colorHex}; stroke-width: 10; stroke-linecap: round;
       stroke-dasharray: 25 200;
       animation: spin 2s linear infinite, pulse 1.3s ease-in-out infinite;
-      filter: drop-shadow(0 0 12px ${colorHex});
-      opacity: 0.9;
+      filter: drop-shadow(0 0 12px ${colorHex}); opacity: .9;
     }
     @keyframes spin { from {transform: rotate(0)} to {transform: rotate(360deg)} }
     @keyframes pulse { 0%,100% {opacity:.85} 50% {opacity:1} }
@@ -35,209 +38,174 @@ function makeAnimatedRingDataURL(colorHex) {
   <circle class="ring-base" cx="50" cy="50" r="38"/>
   <circle class="ring-glow" cx="50" cy="50" r="38"/>
 </svg>`;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-}
-
-function setFaviconDataURL(dataUrl){
-  // limpa anteriores
-  document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
-  // cria novo
-  const link = document.createElement("link");
-  link.rel = "icon";
-  link.type = "image/svg+xml";
-  link.href = dataUrl;
-  document.head.appendChild(link);
-}
-</script>
-
-  const LOGS_JSON = '/chronologterminal/logs.json';
-  const screen = document.getElementById('screen');
-  const statusEl = document.getElementById('status');
-  const form = document.getElementById('cmd');
-  const input = document.getElementById('input');
-
-  let logs = [];
-
-  // print helpers
-  const line = (t='', cls='') => {
-    const d = document.createElement('div');
-    d.textContent = t; if(cls) d.className = cls;
-    screen.appendChild(d); screen.scrollTop = screen.scrollHeight;
-  };
-  const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
-
-  // decrypt helper (mesmo do teu)
-  async function decryptBuffer(buffer, password){
-    const data = new Uint8Array(buffer);
-    const salt = data.slice(0,16), iv = data.slice(16,28), tag = data.slice(data.length-16);
-    const ciphertext = data.slice(28, data.length-16);
-    const blob = new Uint8Array(ciphertext.length + tag.length);
-    blob.set(ciphertext,0); blob.set(tag,ciphertext.length);
-    const pw = new TextEncoder().encode(password);
-    const keyMat = await crypto.subtle.importKey('raw', pw, 'PBKDF2', false, ['deriveKey']);
-    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'}, keyMat, {name:'AES-GCM', length:256}, false, ['decrypt']);
-    return crypto.subtle.decrypt({name:'AES-GCM', iv}, key, blob.buffer);
-  }
-
-  async function boot(){
-    statusEl.textContent = 'LINK_NEGOTIATING';
-    line('[BOOT] INIT…'); await sleep(300);
-    line('[SCAN] VOID NETWORK…'); await sleep(300);
-    line('[AUTH] HANDSHAKE L0…'); await sleep(300);
-    statusEl.textContent = 'LINK_ESTABLISHED';
-    line('[STATUS] LINK_ESTABLISHED');
-    line('────────────────────────────────');
-    line('VOID NETWORK ACCESS');
-    line('Enter ACCESS CODE or type HELP');
-    line('────────────────────────────────');
-  }
-
-  async function loadLogs(){
-    try{
-      const r = await fetch(LOGS_JSON,{cache:'no-store'});
-      logs = await r.json();
-    }catch{
-      // silencioso: sem listar nada
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
     }
-  }
-
-  function help(){
-    line('AVAILABLE COMMANDS:');
-    line('  HELP            – show this help');
-    line('  LIST            – list transmissions (masked)');
-    line("  ACCESS <CODE>   – open a record (ex: ACCESS 963 or ACCESS LOG_ΔTW03)");
-  }
-
-  function listMasked(){
-    if(!logs.length){ line('No transmissions known.'); return; }
-    line('KNOWN TRANSMISSIONS (MASKED):');
-    logs.forEach(l=> line(`  • ${l.id} — ${l.title.replace(/[A-Za-z0-9]/g,'█')}`));
-  }
-
-  async function openByCode(code){
-    const normalized = code.trim().toUpperCase();
-    // match por id numérico (963) ou presença do id no title/arquivo
-    let match = logs.find(l=> l.id.toUpperCase()===normalized);
-    if(!match){
-      // tentativa básica: se digitar LOG_ΔTW03 ou 964, mapeia
-      match = logs.find(l=>{
-        const bag = [l.id, l.title, l.file].join(' ').toUpperCase();
-        return bag.includes(normalized);
-      });
+    function setFaviconDataURL(dataUrl){
+      document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.type = "image/svg+xml";
+      link.href = dataUrl;
+      document.head.appendChild(link);
     }
-    if(!match){ line('ACCESS: DENIED'); return; }
+    document.addEventListener("DOMContentLoaded", ()=>{
+      setFaviconDataURL( makeAnimatedRingDataURL("#f8e390") ); // dourado
+    });
+  </script>
+</head>
 
-    // carrega o texto
-    try{
-      const txt = await fetch(match.file,{cache:'no-store'}).then(r=>r.text());
-      line('────────────────────────────────'); 
-      line(`[OPEN] LOG ${match.id}`);
-      line(txt); 
-      line('────────────────────────────────'); 
-    }catch{
-      line('ERROR: Failed to recover record.');
+<body>
+  <div id="terminal">
+    <div id="status">BOOTING…</div>
+    <div id="screen"></div>
+    <form id="cmd" autocomplete="off">
+      <input id="input" type="text" placeholder="Type HELP" />
+    </form>
+  </div>
+
+  <script>
+    // ---------- ChronoLog Terminal JS ----------
+    const LOGS_JSON = '/chronologterminal/logs.json';
+
+    const screen   = document.getElementById('screen');
+    const statusEl = document.getElementById('status');
+    const form     = document.getElementById('cmd');
+    const input    = document.getElementById('input');
+
+    let logs = [];
+
+    // helpers
+    const line = (t='', cls='') => {
+      const d = document.createElement('div');
+      d.textContent = t;
+      if (cls) d.className = cls;
+      screen.appendChild(d);
+      screen.scrollTop = screen.scrollHeight;
+    };
+    const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+
+    async function decryptBuffer(buffer, password){
+      const data = new Uint8Array(buffer);
+      const salt = data.slice(0,16), iv = data.slice(16,28), tag = data.slice(data.length-16);
+      const ciphertext = data.slice(28, data.length-16);
+      const blob = new Uint8Array(ciphertext.length + tag.length);
+      blob.set(ciphertext,0); blob.set(tag,ciphertext.length);
+      const pw = new TextEncoder().encode(password);
+      const keyMat = await crypto.subtle.importKey('raw', pw, 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:150000, hash:'SHA-256'}, keyMat, {name:'AES-GCM', length:256}, false, ['decrypt']);
+      return crypto.subtle.decrypt({name:'AES-GCM', iv}, key, blob.buffer);
     }
 
-    // anexo opcional
-    if(match.encFile){
-      line('ATTACHMENT: ENCRYPTED — type PASS <password> to unlock & download');
-      // armazena no form uma “sessão” simples
-      form.dataset.pendingEnc = match.encFile;
-      form.dataset.attachName = match.attachName || 'attachment.bin';
-      form.dataset.mime = match.mime || 'application/octet-stream';
-    } else {
-      delete form.dataset.pendingEnc;
+    async function boot(){
+      statusEl.textContent = 'LINK_NEGOTIATING';
+      line('[BOOT] INIT…'); await sleep(1000);
+      line('[SCAN] VOID NETWORK…'); await sleep(1000);
+      line('[AUTH] HANDSHAKE L0…'); await sleep(1000);
+      statusEl.textContent = 'LINK_ESTABLISHED';
+      line('[STATUS] LINK_ESTABLISHED');
+      line('────────────────────────────────');
+      line('VOID NETWORK ACCESS');
+      line('Enter ACCESS CODE or type HELP');
+      line('────────────────────────────────');
     }
-  }
 
-  async function tryPassword(pw){
-    const enc = form.dataset.pendingEnc;
-    if(!enc){ line('No pending encrypted attachment.'); return; }
-    line('[DECRYPT] downloading…');
-    try{
-      const buf = await fetch(enc,{cache:'no-store'}).then(r=>r.arrayBuffer());
-      const dec = await decryptBuffer(buf, pw);
-      const blob = new Blob([dec], {type: form.dataset.mime});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download=form.dataset.attachName; a.click();
-      line('[DECRYPT] success — file saved.');
-      delete form.dataset.pendingEnc;
-    }catch{
-      line('[DECRYPT] failed — wrong password or corrupt file.');
+    async function loadLogs(){
+      try{
+        const r = await fetch(LOGS_JSON,{cache:'no-store'});
+        logs = await r.json();
+      }catch{ /* silencioso */ }
     }
-  }
 
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const value = input.value.trim();
-    if(!value) return;
-    line('> ' + value);
-    input.value='';
-
-    const [cmd, ...rest] = value.split(' ');
-    const arg = rest.join(' ').trim();
-
-    switch(cmd.toUpperCase()){
-      case 'HELP': help(); break;
-      case 'LIST': listMasked(); break;
-      case 'ACCESS':
-        if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
-        await openByCode(arg); break;
-      case 'PASS':
-        if(!arg){ line('USAGE: PASS <password>'); break; }
-        await tryPassword(arg); break;
-      default:
-        // tentativa direta: se o usuário só digitar 963 ou LOG_ΔTW03
-        await openByCode(cmd + (arg?' '+arg:''));
+    function help(){
+      line('AVAILABLE COMMANDS:');
+      line('  HELP            – show this help');
+      line('  LIST            – list transmissions (masked)');
+      line('  ACCESS <CODE>   – open a record (ex: ACCESS TRANSMISSION #)');
     }
-  });
 
-  (async function(){
-    await loadLogs();
-    await boot();
-    input.focus();
-  })();
-</script>
-<script>
-  function setFavicon(svgPath, pngPath){
-    // remove favicons existentes
-    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
-    // adiciona SVG
-    const svg = document.createElement("link");
-    svg.rel  = "icon";
-    svg.type = "image/svg+xml";
-    svg.href = svgPath;
-    document.head.appendChild(svg);
-    // fallback PNG (opcional)
-    if (pngPath){
-      const png = document.createElement("link");
-      png.rel  = "alternate icon";
-      png.type = "image/png";
-      png.href = pngPath;
-      document.head.appendChild(png);
+    function listMasked(){
+      if(!logs.length){ line('No transmissions known.'); return; }
+      line('KNOWN TRANSMISSIONS (MASKED):');
+      logs.forEach(l=> line(`  • ${l.id} — ${l.title.replace(/[A-Za-z0-9]/g,'█')}`));
     }
-  }
 
-  function applyFaviconByPath(){
-    const path = location.pathname.toLowerCase();
-    const isTerminal = path.startsWith("/chronologterminal");
-    if (isTerminal){
-      // ChronoLog = dourado
-      setFavicon("/assets/favicon.svg", "/assets/favicon-gold.png");
-    } else {
-      // Home e demais = verde
-      setFavicon("/assets/favicon-green.svg", "/assets/favicon-green.png");
+    async function openByCode(code){
+      const normalized = code.trim().toUpperCase();
+      let match = logs.find(l=> l.id.toUpperCase() === normalized);
+      if(!match){
+        match = logs.find(l=>{
+          const bag = [l.id, l.title, l.file].join(' ').toUpperCase();
+          return bag.includes(normalized);
+        });
+      }
+      if(!match){ line('ACCESS: DENIED'); return; }
+
+      try{
+        const txt = await fetch(match.file,{cache:'no-store'}).then(r=>r.text());
+        line('────────────────────────────────');
+        line(`[OPEN] LOG ${match.id}`);
+        line(txt);
+        line('────────────────────────────────');
+      }catch{
+        line('ERROR: Failed to recover record.');
+      }
+
+      if(match.encFile){
+        line('ATTACHMENT: ENCRYPTED — type PASS <password> to unlock & download');
+        form.dataset.pendingEnc = match.encFile;
+        form.dataset.attachName = match.attachName || 'attachment.bin';
+        form.dataset.mime = match.mime || 'application/octet-stream';
+      }else{
+        delete form.dataset.pendingEnc;
+      }
     }
-  }
 
-  // aplica ao carregar
-  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
-  // re-aplica se mudar de histórico (caso haja navegação interna)
-  window.addEventListener("popstate", applyFaviconByPath);
-  // e quando a aba volta a ficar visível (garante pós-cache)
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") applyFaviconByPath();
-  });
-</script>
+    async function tryPassword(pw){
+      const enc = form.dataset.pendingEnc;
+      if(!enc){ line('No pending encrypted attachment.'); return; }
+      line('[DECRYPT] downloading…');
+      try{
+        const buf = await fetch(enc,{cache:'no-store'}).then(r=>r.arrayBuffer());
+        const dec = await decryptBuffer(buf, pw);
+        const blob = new Blob([dec], {type: form.dataset.mime});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href=url; a.download=form.dataset.attachName; a.click();
+        line('[DECRYPT] success — file saved.');
+        delete form.dataset.pendingEnc;
+      }catch{
+        line('[DECRYPT] failed — wrong password or corrupt file.');
+      }
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const value = input.value.trim();
+      if(!value) return;
+      line('> ' + value);
+      input.value='';
+
+      const [cmd, ...rest] = value.split(' ');
+      const arg = rest.join(' ').trim();
+
+      switch(cmd.toUpperCase()){
+        case 'HELP':  help(); break;
+        case 'LIST':  listMasked(); break;
+        case 'ACCESS':
+          if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
+          await openByCode(arg); break;
+        case 'PASS':
+          if(!arg){ line('USAGE: PASS <password>'); break; }
+          await tryPassword(arg); break;
+        default:
+          await openByCode(cmd + (arg ? (' ' + arg) : ''));
+      }
+    });
+
+    (async function(){
+      await loadLogs();
+      await boot();
+      input.focus();
+    })();
+  </script>
 </body>
 </html>
