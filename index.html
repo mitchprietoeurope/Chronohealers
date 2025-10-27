@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Chronohealers</title>
 
-  <!-- Favicon default (Home = verde) -->
- <link rel="icon" type="svg+xml" href="data:svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 810 810'%3E%3Cuse href='/assets/favicon-green-ring.svg' stroke='%2386ff9e' fill='none'/%3E%3C/svg%3E">
-
-
   <style>
     :root{ --accent:#86ff9e; --muted:#8fb4a0; }
 
@@ -162,13 +158,6 @@
 </head>
 
 <body>
-<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none">
-<defs>
-  <symbol id="faviconTower" viewBox="0 0 810 810">
-    <use href="#towerCrystal_v3" stroke="currentColor" fill="none"/>
-  </symbol>
-</defs>
-</svg>
 
 <!-- ===== tower-crystal (final) ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
@@ -246,59 +235,70 @@
 </main>
 
 <script>
-  //  dinâmico
-  function setFavicon(svgPath, pngPath){
-    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
-    const svg = document.createElement("link");
-    svg.rel  = "icon";
-    svg.type = "image/svg+xml";
-    svg.href = svgPath;
-    document.head.appendChild(svg);
-    if (pngPath){
-      const png = document.createElement("link");
-      png.rel  = "alternate icon";
-      png.type = "image/png";
-      png.href = pngPath;
-      document.head.appendChild(png);
+  // Gera um SVG animado (giro + pulso + glitch) como data URL
+  function makeAnimatedRingDataURL(colorHex) {
+    const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    /* força a origem no centro em SVG */
+    circle { transform-box: fill-box; transform-origin: 50% 50%; }
+    @keyframes spin   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse  { 0%,100% { stroke-width: 8; opacity: .90; } 50% { stroke-width: 12; opacity: 1; } }
+    /* “glitch” curtinho em algumas voltas (frames de steps pra dar estalo) */
+    @keyframes glitch {
+      0%, 92%, 100% { stroke-dasharray: 0 400; stroke-dashoffset: 0; }
+      93%           { stroke-dasharray: 40 400; stroke-dashoffset: -12; }
+      94%           { stroke-dasharray: 14 400; stroke-dashoffset: -3; }
+      95%           { stroke-dasharray: 0 400; stroke-dashoffset: 0; }
     }
+    .ring {
+      fill: none;
+      stroke: ${colorHex};
+      /* animação forte: giro rápido + pulso marcado + glitch eventual */
+      animation:
+        spin   2.2s linear infinite,
+        pulse  1.4s ease-in-out infinite,
+        glitch 7s steps(1, end) infinite;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 8px ${colorHex}80);
+    }
+  </style>
+  <!-- raio 38 com stroke animado -->
+  <circle class="ring" cx="50" cy="50" r="38"/>
+</svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
   }
-  function applyFaviconByPath(){
+
+  function setAnimatedFavicon(colorHex) {
+    // remove anteriores
+    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+    // cria novo (data URL)
+    const link = document.createElement("link");
+    link.rel  = "icon";
+    link.type = "image/svg+xml";
+    link.href = makeAnimatedRingDataURL(colorHex);
+    document.head.appendChild(link);
+  }
+
+  function applyFaviconByPath() {
     const path = location.pathname.toLowerCase();
     const isTerminal = path.startsWith("/chronologterminal");
-  
-    if (isTerminal){
-  setFavicon("/assets/favicon-gold-ring.svg");
-} else {
-  setFavicon("/assets/favicon-green-ring.svg");
-}
+    // Home = verde, Terminal = dourado
+    if (isTerminal) {
+      setAnimatedFavicon("#f8e390");
+    } else {
+      setAnimatedFavicon("#86ff9e");
+    }
   }
+
   document.addEventListener("DOMContentLoaded", applyFaviconByPath);
   window.addEventListener("popstate", applyFaviconByPath);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") applyFaviconByPath();
   });
-
-  // Torre 3 → abre ChronoLog
-document.addEventListener("DOMContentLoaded", () => {
-  const gateway = document.getElementById("gatewayTower");
-  if (gateway){
-    gateway.style.cursor = "pointer";
-    gateway.addEventListener("click", () => {
-      window.location.href = "/chronologterminal";
-    });
-
-    // (opcional) Torre pisca dourado por 5s a cada 15s
-    const ON_MS = 3000, CYCLE = 15000;
-    function flashGold(){
-      gateway.classList.add("gateway");
-      setTimeout(()=> gateway.classList.remove("gateway"), ON_MS);
-    }
-    setInterval(flashGold, CYCLE);
-  }
-});
-
-  });
 </script>
+
 
 </body>
 </html>
