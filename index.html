@@ -236,39 +236,51 @@
 
 <script>
   // Gera um SVG animado (giro + pulso + glitch) como data URL
-  function makeAnimatedRingDataURL(colorHex) {
-    const svg = `
+function makeAnimatedRingDataURL(colorHex) {
+  const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <style>
-    /* força a origem no centro em SVG */
     circle { transform-box: fill-box; transform-origin: 50% 50%; }
-    @keyframes spin   { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulse  { 0%,100% { stroke-width: 8; opacity: .90; } 50% { stroke-width: 12; opacity: 1; } }
-    /* “glitch” curtinho em algumas voltas (frames de steps pra dar estalo) */
-    @keyframes glitch {
-      0%, 92%, 100% { stroke-dasharray: 0 400; stroke-dashoffset: 0; }
-      93%           { stroke-dasharray: 40 400; stroke-dashoffset: -12; }
-      94%           { stroke-dasharray: 14 400; stroke-dashoffset: -3; }
-      95%           { stroke-dasharray: 0 400; stroke-dashoffset: 0; }
-    }
-    .ring {
+
+    /* Anel base sempre visível */
+    .ring-base {
       fill: none;
       stroke: ${colorHex};
-      /* animação forte: giro rápido + pulso marcado + glitch eventual */
-      animation:
-        spin   2.2s linear infinite,
-        pulse  1.4s ease-in-out infinite,
-        glitch 7s steps(1, end) infinite;
+      stroke-width: 6;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 6px ${colorHex}80);
+    }
+
+    /* Faixa de luz que gira */
+    .ring-glow {
+      fill: none;
+      stroke: ${colorHex};
+      stroke-width: 10;              /* mais grosso que o anel */
       stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px ${colorHex}80);
+      stroke-dasharray: 25 200;      /* cria a ponta de luz */
+      animation:
+        spin 2s linear infinite,
+        pulse 1.3s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px ${colorHex});
+      opacity: 0.9;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .85; }
+      50%      { opacity: 1;   }
     }
   </style>
-  <!-- raio 38 com stroke animado -->
-  <circle class="ring" cx="50" cy="50" r="38"/>
+
+  <circle class="ring-base" cx="50" cy="50" r="38"/>
+  <circle class="ring-glow" cx="50" cy="50" r="38"/>
 </svg>`;
-    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-  }
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
 
   function setAnimatedFavicon(colorHex) {
     // remove anteriores
