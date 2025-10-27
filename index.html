@@ -6,7 +6,7 @@
   <title>Chronohealers</title>
 
   <!-- Favicon default (Home = verde) -->
- <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 810 810'%3E%3Cuse href='%23faviconTower' stroke='%2386ff9e' fill='none'/%3E%3C/svg%3E">
+ <link rel="icon" type="svg+xml" href="data:svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 810 810'%3E%3Cuse href='/assets/favicon-green-ring.svg' stroke='%2386ff9e' fill='none'/%3E%3C/svg%3E">
 
 
   <style>
@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // (opcional) Torre pisca dourado por 5s a cada 15s
-    const ON_MS = 5000, CYCLE = 15000;
+    const ON_MS = 3000, CYCLE = 15000;
     function flashGold(){
       gateway.classList.add("gateway");
       setTimeout(()=> gateway.classList.remove("gateway"), ON_MS);
