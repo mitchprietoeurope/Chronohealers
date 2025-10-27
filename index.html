@@ -265,11 +265,12 @@
   function applyFaviconByPath(){
     const path = location.pathname.toLowerCase();
     const isTerminal = path.startsWith("/chronologterminal");
+  
     if (isTerminal){
-      setFavicon("/assets/favicon_v2.svg", "/assets/favicon_v2.png");
-    } else {
-      setFavicon("/assets/favicon-green_v2.svg", "/assets/favicon-green_v2.png");
-    }
+  setFavicon("/assets/favicon-gold-ring.svg");
+} else {
+  setFavicon("/assets/favicon-green-ring.svg");
+}
   }
   document.addEventListener("DOMContentLoaded", applyFaviconByPath);
   window.addEventListener("popstate", applyFaviconByPath);
