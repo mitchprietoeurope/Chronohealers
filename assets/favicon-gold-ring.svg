@@ -3,3 +3,13 @@
     stroke="#f8e390" stroke-width="8" fill="none"
     stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
+  <style>
+    @keyframes breathe {
+      0%,100% { opacity:.92; }
+      50%     { opacity:1;   }
+    }
+    .g { animation: breathe 4.6s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .g { animation:none; }
+    }
+  </style>
