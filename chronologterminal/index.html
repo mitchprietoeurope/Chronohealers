@@ -205,8 +205,6 @@ if (attemptsData.count >= MAX_ATTEMPTS) {
   attemptsData.lockUntil = Date.now() + LOCK_TIME;
   line("SYSTEM LOCKDOWN — Too many attempts.");
 }
-      attemptsData = {};
-localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
 
 localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
 
