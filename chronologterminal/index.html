@@ -149,6 +149,51 @@
       }catch{
         line('ERROR: Failed to recover record.');
       }
+// === RATE LIMIT (LocalStorage) ===
+const RATE_KEY = 'ch_rate_v1';        // mude se quiser resetar geral
+const MAX_ATTEMPTS = 5;               // tentativas por janela
+const WINDOW_MS = 60 * 60 * 1000;     // 1 hora
+
+function rl_get(){
+  try { return JSON.parse(localStorage.getItem(RATE_KEY)) || {}; }
+  catch { return {}; }
+}
+function rl_set(s){ localStorage.setItem(RATE_KEY, JSON.stringify(s)); }
+
+const rateLimiter = {
+  canAttempt(){
+    const now = Date.now();
+    const s = rl_get();
+    if (!s.resetAt || now >= s.resetAt){
+      // abre nova janela
+      rl_set({ count: 0, resetAt: now + WINDOW_MS });
+      return true;
+    }
+    return (s.count || 0) < MAX_ATTEMPTS;
+  },
+  registerAttempt(){
+    const now = Date.now();
+    const s = rl_get();
+    if (!s.resetAt || now >= s.resetAt){
+      rl_set({ count: 1, resetAt: now + WINDOW_MS });
+    } else {
+      s.count = (s.count || 0) + 1;
+      rl_set(s);
+    }
+  },
+  attemptsLeft(){
+    const now = Date.now();
+    const s = rl_get();
+    if (!s.resetAt || now >= s.resetAt) return MAX_ATTEMPTS;
+    return Math.max(0, MAX_ATTEMPTS - (s.count || 0));
+  },
+  msLeft(){
+    const now = Date.now();
+    const s = rl_get();
+    return (s.resetAt && now < s.resetAt) ? (s.resetAt - now) : 0;
+  },
+  reset(){ localStorage.removeItem(RATE_KEY); } // útil pra testes
+};
 
       if(match.encFile){
         line('ATTACHMENT: ENCRYPTED — type PASS <password> to unlock & download');
@@ -212,8 +257,18 @@ localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
         case 'HELP':  help(); break;
         case 'LIST':  listMasked(); break;
         case 'ACCESS':
-          if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
-          await openByCode(arg); break;
+  if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
+
+  if (!rateLimiter.canAttempt()){
+    const mins = Math.ceil(rateLimiter.msLeft()/60000);
+    line(`RATE-LIMIT: Tentativas esgotadas. Aguarde ~${mins} min para tentar de novo.`);
+    break;
+  }
+
+  rateLimiter.registerAttempt(); // conta a tentativa (sucesso ou erro)
+  await openByCode(arg);
+  break;
+
         case 'PASS':
           if(!arg){ line('USAGE: PASS <password>'); break; }
           await tryPassword(arg); break;
