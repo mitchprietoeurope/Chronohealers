@@ -159,6 +159,8 @@
 
 <body>
 
+  <audio id="bgm" src="/assets/Gateway.mp3" preload="auto"></audio>
+
 <!-- ===== tower-crystal (final) ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -336,7 +338,27 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(flashOn, CYCLE);
 });
 </script>
+<script>
+const bgm = document.getElementById("bgm");
+let bgmStarted = false;
 
+function startMusic(){
+  if (bgmStarted) return;
+  bgmStarted = true;
 
+  bgm.volume = 0;
+  bgm.play().catch(()=>{ /* navegador às vezes aguarda interação */ });
+
+  let v = 0;
+  const fade = setInterval(()=>{
+    v += 0.02; // velocidade do fade (ajustável)
+    bgm.volume = Math.min(v, 1);
+    if (v >= 1) clearInterval(fade);
+  }, 120); // intervalo (ms)
+}
+
+// dispara ao primeiro clique em QUALQUER lugar
+document.addEventListener("click", startMusic);
+</script>
 </body>
 </html>
