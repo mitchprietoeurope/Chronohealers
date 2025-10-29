@@ -187,6 +187,29 @@
       const [cmd, ...rest] = value.split(' ');
       const arg = rest.join(' ').trim();
 
+      // === RATE LIMIT (LocalStorage) ===
+const MAX_ATTEMPTS = 6;           
+const LOCK_TIME = 60 * 60 * 1000; // 1 hora
+
+let attemptsData = JSON.parse(localStorage.getItem("chrono_attempts") || "{}");
+
+if (attemptsData.lockUntil && Date.now() < attemptsData.lockUntil) {
+  line("ACCESS LOCKED");
+  line("You're calling too much attention. THe Void will notice. Try again later, or come back with the right Access Code.");
+  return;
+}
+// após tentar ACCESS / PASS / openByCode:
+attemptsData.count = (attemptsData.count || 0) + 1;
+
+if (attemptsData.count >= MAX_ATTEMPTS) {
+  attemptsData.lockUntil = Date.now() + LOCK_TIME;
+  line("SYSTEM LOCKDOWN — Too many attempts.");
+}
+      attemptsData = {};
+localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
+
+localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
+
       switch(cmd.toUpperCase()){
         case 'HELP':  help(); break;
         case 'LIST':  listMasked(); break;
