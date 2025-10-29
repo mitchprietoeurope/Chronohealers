@@ -240,8 +240,10 @@ let attemptsData = JSON.parse(localStorage.getItem("chrono_attempts") || "{}");
 
 if (attemptsData.lockUntil && Date.now() < attemptsData.lockUntil) {
   line("ACCESS LOCKED");
-  line("You're calling too much attention. THe Void will notice. Try again later, or come back with the right Access Code.");
-  return;
+  line("You're calling too much attention.");
+  line("The Void is aware.");
+  line("Come back later.");
+    return;
 }
 // após tentar ACCESS / PASS / openByCode:
 attemptsData.count = (attemptsData.count || 0) + 1;
