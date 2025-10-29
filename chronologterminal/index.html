@@ -14,6 +14,17 @@
     form#cmd{margin-top:10px;display:flex;gap:8px}
     #input{flex:1;background:#0f2a1a;color:#a8ffbf;border:1px solid #1c3d2a;border-radius:8px;padding:8px}
   </style>
+<style>
+  /* overlay de flash */
+  .flash-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0;
+  }
+  .flash-gold{ background: radial-gradient(60% 60% at 50% 50%, rgba(248,227,144,.35), rgba(248,227,144,0) 70%); }
+  .flash-red { background: radial-gradient(60% 60% at 50% 50%, rgba(255,70,70,.25), rgba(255,70,70,0) 70%); }
+
+  .flash-active{ animation: flashFade .6s ease-out; }
+  @keyframes flashFade{ 0%{opacity:1} 100%{opacity:0} }
+</style>
 
   <script>
     // ---------- FAVICON: anel animado (dourado) ----------
@@ -55,6 +66,8 @@
 </head>
 
 <body>
+  <div id="flash" class="flash-overlay"></div>
+
   <div id="terminal">
     <div id="status">BOOTING…</div>
     <div id="screen"></div>
@@ -75,6 +88,26 @@
     let logs = [];
 
     // helpers
+    async function typeLine(text='', cls='', delay=12){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  screen.appendChild(d);
+  for(let i=0;i<text.length;i++){
+    d.textContent += text[i];
+    screen.scrollTop = screen.scrollHeight;
+    await new Promise(r=>setTimeout(r, delay));
+  }
+}
+
+    function flash(color='gold'){ 
+  const el = document.getElementById('flash');
+  if(!el) return;
+  el.className = 'flash-overlay ' + (color==='red' ? 'flash-red' : 'flash-gold');
+  // reflow p/ reiniciar animação
+  void el.offsetWidth;
+  el.classList.add('flash-active');
+}
+
     const line = (t='', cls='') => {
       const d = document.createElement('div');
       d.textContent = t;
@@ -98,9 +131,9 @@
 
     async function boot(){
       statusEl.textContent = 'LINK_NEGOTIATING';
-      line('[BOOT] INIT…'); await sleep(1000);
+      line('[BOOT] INITIATING…'); await sleep(1000);
       line('[SCAN] VOID NETWORK…'); await sleep(1000);
-      line('[AUTH] HANDSHAKE L0…'); await sleep(1000);
+      line('[AUTH] CHRONOLOG ACCESSED…'); await sleep(1000);
       statusEl.textContent = 'LINK_ESTABLISHED';
       line('[STATUS] LINK_ESTABLISHED');
       line('────────────────────────────────');
@@ -238,11 +271,18 @@ const LOCK_TIME = 60 * 60 * 1000; // 1 hora
 
 let attemptsData = JSON.parse(localStorage.getItem("chrono_attempts") || "{}");
 
+      // efeito
+flash('red');
+playSFX('sfxRumble');
+playSFX('sfxWhisper');
+setStatus('TRACE_RISK: ELEVATED');
+
+      // mensagem ritual
 if (attemptsData.lockUntil && Date.now() < attemptsData.lockUntil) {
   line("ACCESS LOCKED");
-  line("You're calling too much attention.");
-  line("The Void is aware.");
-  line("Come back later.");
+await typeLine("You're calling too much attention.");
+await typeLine("The Void is aware.");
+await typeLine("Come back later.");
     return;
 }
 // após tentar ACCESS / PASS / openByCode:
@@ -267,6 +307,17 @@ localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
     break;
   }
 
+flash('red');
+playSFX('sfxRumble');
+setStatus('TRACE_RISK: HIGH');
+
+await typeLine('[TRACE WARNING]');
+await typeLine('You’ve stayed in the Void Network for too long.');
+await typeLine('The signal is starting to echo back.');
+line('');
+await typeLine('Disconnect now.');
+await typeLine('Return after the field settles.');
+          
   rateLimiter.registerAttempt(); // conta a tentativa (sucesso ou erro)
   await openByCode(arg);
   break;
