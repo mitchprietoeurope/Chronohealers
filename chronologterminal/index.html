@@ -7,7 +7,7 @@
 
   <style>
     /* estilo básico do terminal (opcional) */
-    html,body{height:100%;margin:0;background:#0b0f11;color:#86ff9e;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace}
+    html,{height:100%;margin:0;background:#0b0f11;color:#86ff9e;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace}
     #terminal{max-width:960px;margin:24px auto;padding:16px}
     #status{color:#8fb4a0;margin-bottom:8px}
     #screen{min-height:320px;border:1px solid #183126;border-radius:10px;padding:12px;overflow:auto;background:#0d1417;box-shadow:inset 0 0 80px rgba(134,255,158,.05)}
@@ -67,6 +67,11 @@
 
 <body>
   <div id="flash" class="flash-overlay"></div>
+
+  <!-- SFX -->
+  <audio id="sfxRumble" src="/assets/sfx/rumble.mp3" preload="auto"></audio>
+  <audio id="sfxWhisper" src="/assets/sfx/whisper_rev.mp3" preload="auto"></audio>
+
 
   <div id="terminal">
     <div id="status">BOOTING…</div>
@@ -148,6 +153,47 @@
         logs = await r.json();
       }catch{ /* silencioso */ }
     }
+// === RATE LIMIT (LocalStorage) ===
+const RATE_KEY = 'ch_rate_v1';
+const MAX_ATTEMPTS = 6;                 // você queria 6
+const WINDOW_MS   = 60*60*1000;         // 1h
+
+function rl_get(){
+  try { return JSON.parse(localStorage.getItem(RATE_KEY)) || {}; }
+  catch { return {}; }
+}
+function rl_set(s){ localStorage.setItem(RATE_KEY, JSON.stringify(s)); }
+
+const rateLimiter = {
+  canAttempt(){
+    const now = Date.now();
+    const s = rl_get();
+    if(!s.resetAt || now >= s.resetAt){
+      rl_set({ count: 0, resetAt: now + WINDOW_MS });
+      return true;
+    }
+    return (s.count || 0) < MAX_ATTEMPTS;
+  },
+  registerAttempt(){ // chamar SÓ quando falhar
+    const now = Date.now();
+    const s = rl_get();
+    if(!s.resetAt || now >= s.resetAt){
+      rl_set({ count: 1, resetAt: now + WINDOW_MS });
+    } else {
+      s.count = (s.count || 0) + 1;
+      rl_set(s);
+    }
+  },
+  attemptsLeft(){
+    const s = rl_get();
+    if(!s.resetAt || Date.now() >= s.resetAt) return MAX_ATTEMPTS;
+    return Math.max(0, MAX_ATTEMPTS - (s.count || 0));
+  },
+  msLeft(){
+    const s = rl_get();
+    return (s.resetAt && Date.now() < s.resetAt) ? (s.resetAt - Date.now()) : 0;
+  }
+};
 
     function help(){
       line('AVAILABLE COMMANDS:');
@@ -255,22 +301,6 @@ const rateLimiter = {
       }
     }
 
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const value = input.value.trim();
-      if(!value) return;
-      line('> ' + value);
-      input.value='';
-
-      const [cmd, ...rest] = value.split(' ');
-      const arg = rest.join(' ').trim();
-
-      // === RATE LIMIT (LocalStorage) ===
-const MAX_ATTEMPTS = 6;           
-const LOCK_TIME = 60 * 60 * 1000; // 1 hora
-
-let attemptsData = JSON.parse(localStorage.getItem("chrono_attempts") || "{}");
-
       // efeito
 flash('red');
 playSFX('sfxRumble');
@@ -286,26 +316,42 @@ await typeLine("Come back later.");
     return;
 }
 // após tentar ACCESS / PASS / openByCode:
-attemptsData.count = (attemptsData.count || 0) + 1;
+async function openByCode(code){
+  const normalized = code.trim().toUpperCase();
+  let match = logs.find(l=> l.id.toUpperCase() === normalized);
+  if(!match){
+    match = logs.find(l=>{
+      const bag = [l.id, l.title, l.file].join(' ').toUpperCase();
+      return bag.includes(normalized);
+    });
+  }
+  if(!match){
+    line('ACCESS: DENIED');
+    return false;                // <— FALHA
+  }
 
-if (attemptsData.count >= MAX_ATTEMPTS) {
-  attemptsData.lockUntil = Date.now() + LOCK_TIME;
-  line("SYSTEM LOCKDOWN — Too many attempts.");
+  try{
+    const txt = await fetch(match.file,{cache:'no-store'}).then(r=>r.text());
+    line('────────────────────────────────');
+    line(`[OPEN] LOG ${match.id}`);
+    line(txt);
+    line('────────────────────────────────');
+  }catch{
+    line('ERROR: Failed to recover record.');
+    return false;                // <— FALHA
+  }
+
+  if(match.encFile){
+    line('ATTACHMENT: ENCRYPTED — type PASS <password> to unlock & download');
+    form.dataset.pendingEnc = match.encFile;
+    form.dataset.attachName = match.attachName || 'attachment.bin';
+    form.dataset.mime = match.mime || 'application/octet-stream';
+  } else {
+    delete form.dataset.pendingEnc;
+  }
+  return true;                   // <— SUCESSO
 }
 
-localStorage.setItem("chrono_attempts", JSON.stringify(attemptsData));
-
-      switch(cmd.toUpperCase()){
-        case 'HELP':  help(); break;
-        case 'LIST':  listMasked(); break;
-        case 'ACCESS':
-  if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
-
-  if (!rateLimiter.canAttempt()){
-    const mins = Math.ceil(rateLimiter.msLeft()/60000);
-    line(`RATE-LIMIT: Tentativas esgotadas. Aguarde ~${mins} min para tentar de novo.`);
-    break;
-  }
 
 flash('red');
 playSFX('sfxRumble');
@@ -334,7 +380,71 @@ await typeLine('Return after the field settles.');
       await loadLogs();
       await boot();
       input.focus();
-    })();
+ form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const value = input.value.trim();
+  if(!value) return;
+  line('> ' + value);
+  input.value='';
+
+  const [cmd, ...rest] = value.split(' ');
+  const arg = rest.join(' ').trim();
+
+  switch(cmd.toUpperCase()){
+    case 'HELP':  help(); break;
+    case 'LIST':  listMasked(); break;
+
+    case 'ACCESS':
+      if(!arg){ line('USAGE: ACCESS <CODE>'); break; }
+
+      // Checa bloqueio
+      if(!rateLimiter.canAttempt()){
+        const mins = Math.max(1, Math.ceil(rateLimiter.msLeft()/60000));
+        flash('red');
+        playSFX('sfxRumble');
+        setStatus('TRACE_RISK: HIGH');
+
+        await typeLine('[TRACE WARNING]');
+        await typeLine('You’ve stayed in the Void Network for too long.');
+        await typeLine('The signal is starting to echo back.');
+        line('');
+        await typeLine(`Disconnect now. Return in ~${mins} minutes.`);
+        break;
+      }
+
+      // Tenta abrir
+      const ok = await openByCode(arg);
+
+      // Se falhou, conta tentativa e, se zerou, mostra a mensagem “ritual”
+      if(!ok){
+        rateLimiter.registerAttempt();
+        if(!rateLimiter.canAttempt()){
+          flash('gold');
+          playSFX('sfxRumble');
+          playSFX('sfxWhisper');
+          setStatus('TRACE_RISK: ELEVATED');
+
+          await typeLine('[ACCESS LOCKED]');
+          await typeLine("You're calling too much attention.");
+          await typeLine('The Void is aware of your presence now.');
+          line('');
+          await typeLine('Wait before you try again.');
+          await typeLine('Return only when you are certain of the code.');
+        }
+      }
+      break;
+
+    case 'PASS':
+      if(!arg){ line('USAGE: PASS <password>'); break; }
+      await tryPassword(arg);
+      break;
+
+    default:
+      // fallback: tenta abrir direto o que foi digitado
+      await openByCode(cmd + (arg ? (' ' + arg) : ''));
+  }
+});
+
   </script>
-</body>
+</>
 </html>
