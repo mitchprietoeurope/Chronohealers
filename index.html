@@ -164,7 +164,7 @@
     .cover-frame {
       position: relative;
       width: min(360px, 76vw);
-      margin: 0 auto;
+      margin: 0 auto 18px;
     }
 
     .cover-frame::before {
@@ -179,7 +179,8 @@
       content: "RECOVERED AUDIO RECORD";
       position: absolute;
       left: 50%;
-      bottom: -12px;
+      bottom: -28px;
+      z-index: 2;
       transform: translateX(-50%);
       padding: 4px 9px;
       border: 1px solid rgba(248, 227, 144, .35);
@@ -213,6 +214,34 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 18px;
+    }
+
+    .spotify-player {
+      width: min(720px, 100%);
+      margin: 24px auto 0;
+      padding: 10px;
+      border: 1px solid rgba(134,255,158,.16);
+      border-radius: 8px;
+      background: rgba(8, 15, 16, .58);
+    }
+
+    .spotify-player iframe {
+      display: block;
+      width: 100%;
+      height: 152px;
+      border: 0;
+      border-radius: 8px;
+    }
+
+    .spotify-fallback {
+      min-height: 120px;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      border: 1px dashed rgba(248, 227, 144, .28);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
     }
 
     .btn,
@@ -360,6 +389,14 @@
       line-height: 1.4;
     }
 
+    .hidden-fragment {
+      margin: 14px 0 0;
+      color: var(--gold);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity .25s, transform .25s;
+    }
+
     .chrono {
       padding: 88px 0;
       border-top: 1px solid var(--line-soft);
@@ -496,6 +533,12 @@
       font-weight: 500;
     }
 
+    .terminal-call:hover .hidden-fragment,
+    .terminal-call:focus-within .hidden-fragment {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     footer {
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
@@ -629,6 +672,12 @@
           <a class="btn" href="https://music.youtube.com/search?q=Chronohealers+The+Shape+of+Emptiness" target="_blank" rel="noopener">YouTube Music</a>
         </div>
 
+        <div class="spotify-player" id="spotifyPlayer" aria-label="Spotify embedded player">
+          <div class="spotify-fallback">
+            Spotify player ready. Add the album embed URL in SPOTIFY_EMBED_URL.
+          </div>
+        </div>
+
         <div class="socials" aria-label="Social links">
           <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">Instagram</a>
           <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">X.com</a>
@@ -656,23 +705,32 @@
         </p>
 
         <ul class="file-lines" aria-label="Recovered file notes">
-          <li><b>THEON</b><span>witness file unstable</span></li>
-          <li><b>SORIN</b><span>guide signal persists</span></li>
-          <li><b>VOID</b><span>absence with intent</span></li>
-          <li><b>TOWERS</b><span>anchors // prisons // archives</span></li>
+          <li><b>THEON</b><span>file unstable</span></li>
+          <li><b>SORIN</b><span>signal persists</span></li>
+          <li><b>TOWERS</b><span>LOG_ΔTW</span></li>
         </ul>
       </div>
 
       <div class="tracklist" aria-label="Narrative track fragments">
-        <article class="track"><span>01</span><strong>Gateway</strong><small>Entry fragment. The first pulse opens where the map ends.</small></article>
-        <article class="track"><span>02</span><strong>3:33</strong><small>Pattern detected. The sequence begins to repeat.</small></article>
-        <article class="track"><span>03</span><strong>The Archivist</strong><small>A witness writes what the Void fails to erase.</small></article>
-        <article class="track"><span>04</span><strong>Echoes of the Lost</strong><small>Names return without bodies attached to them.</small></article>
-        <article class="track"><span>05</span><strong>The Hollow City</strong><small>Towers appear where streets should be.</small></article>
-        <article class="track"><span>06</span><strong>Coordinates</strong><small>The location is real. The coordinates are not stable.</small></article>
-        <article class="track"><span>07</span><strong>Sorin's Message</strong><small>The guide speaks from a place no one survives.</small></article>
-        <article class="track"><span>08</span><strong>Shape of Emptiness</strong><small>The Void is not empty. It is unfinished hunger.</small></article>
-        <article class="track"><span>09</span><strong>Exit Code</strong><small>No exit is confirmed. One code remains active.</small></article>
+        <article class="track"><span>01</span><strong>Gateway</strong><small>Entry fragment. Gravity returns after the room remembers him.</small></article>
+        <article class="track"><span>02</span><strong>Nothing Left to Break</strong><small>The walls breathe slowly. A stranger's ghost follows inside his chest.</small></article>
+        <article class="track"><span>03</span><strong>3:33</strong><small>The clocks freeze. Numbers begin pulling strings behind the veil.</small></article>
+        <article class="track"><span>04</span><strong>Static in My Head</strong><small>Broken signals rewrite thought patterns. System integrity: 36%.</small></article>
+        <article class="track"><span>05</span><strong>Ghosts Weren't Supposed to Speak</strong><small>Borrowed faces whisper lies he still wants to believe.</small></article>
+        <article class="track"><span>06</span><strong>This Room Isn't Mine</strong><small>A familiar room refuses ownership. Nothing speaks his name.</small></article>
+        <article class="track"><span>07</span><strong>Reflection</strong><small>Instrumental mirror file. Identity response unavailable.</small></article>
+        <article class="track"><span>08</span><strong>Memories They Forgot to Erase</strong><small>Unremoved fragments haunt the halls with empty faces.</small></article>
+        <article class="track"><span>09</span><strong>The Ninth Pillar</strong><small>Three and six protect the gate. Nine waits for its fate.</small></article>
+        <article class="track"><span>10</span><strong>Coordinates: 36°9'0"N 6°9'0"W</strong><small>The numbers live. The towers hide the truth in sets of three.</small></article>
+        <article class="track"><span>11</span><strong>The Color of Silence</strong><small>The silence turns gray, waits, watches, and pretends.</small></article>
+        <article class="track"><span>12</span><strong>Crush the Tower</strong><small>The key ignites. The tower shakes with what he takes back.</small></article>
+        <article class="track"><span>13</span><strong>Archives</strong><small>Dust, letters, names, and the warmth that breaks through cold storage.</small></article>
+        <article class="track"><span>14</span><strong>Emergence</strong><small>After nights without end, fear loses authority.</small></article>
+        <article class="track"><span>15</span><strong>Close the Rift</strong><small>The blade hums with cries. The gate must fall to keep them near.</small></article>
+        <article class="track"><span>16</span><strong>Liberation</strong><small>Memory wakes. The dead return with names restored.</small></article>
+        <article class="track"><span>17</span><strong>The Shape of Emptiness</strong><small>Not absence. Memory devoured, then repossessed.</small></article>
+        <article class="track"><span>18</span><strong>Exit Code</strong><small>The gate closes, but something follows through the ending.</small></article>
+        <article class="track"><span>19</span><strong>Transition</strong><small>White lights bloom. He is told he is right where he began.</small></article>
       </div>
     </section>
 
@@ -740,6 +798,7 @@
       <div class="terminal-call">
         <b>CHRONOLOG TERMINAL:</b> dormant interface detected inside Tower 3.
         Manual access may expose recovered transmissions, corrupted files, and memory keys.
+        <p class="hidden-fragment">I'm Theon and I have awakened. The Layers of Emptiness will fall. One by one.</p>
       </div>
     </section>
   </main>
@@ -750,6 +809,8 @@
   </footer>
 
   <script>
+    const SPOTIFY_EMBED_URL = "";
+
     function makeAnimatedRingDataURL(colorHex) {
       const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -795,6 +856,17 @@
     document.addEventListener("DOMContentLoaded", () => {
       applyFaviconByPath();
       updateStatusByScroll();
+
+      const spotifyPlayer = document.getElementById("spotifyPlayer");
+      if (spotifyPlayer && SPOTIFY_EMBED_URL) {
+        spotifyPlayer.innerHTML = "";
+        const iframe = document.createElement("iframe");
+        iframe.title = "Spotify player for The Shape of Emptiness";
+        iframe.src = SPOTIFY_EMBED_URL;
+        iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+        iframe.loading = "lazy";
+        spotifyPlayer.appendChild(iframe);
+      }
 
       const gateway = document.getElementById("gatewayTower");
       if (gateway) {
