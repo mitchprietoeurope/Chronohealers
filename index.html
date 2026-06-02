@@ -1,364 +1,836 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chronohealers</title>
-
   <style>
-    :root{ --accent:#86ff9e; --muted:#8fb4a0; }
+    :root {
+      color-scheme: dark;
+      --bg: #050808;
+      --panel: #0b1112;
+      --panel-2: #101817;
+      --line: rgba(134, 255, 158, .16);
+      --line-soft: rgba(143, 180, 160, .16);
+      --accent: #86ff9e;
+      --muted: #8fb4a0;
+      --gold: #f8e390;
+      --red: #ff6262;
+      --white: #eef9ef;
+    }
 
-    html, body { height:100%; }
-    body{
-      margin:0;
-      min-height:100vh;
-      background: radial-gradient(1200px 800px at 70% 20%, #0f1518 0%, #070a0b 60%, #020405 100%) fixed;
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        radial-gradient(900px 600px at 50% 0%, rgba(248, 227, 144, .10), transparent 60%),
+        radial-gradient(800px 520px at 82% 18%, rgba(134, 255, 158, .10), transparent 62%),
+        linear-gradient(180deg, #071011 0%, #020405 72%, #050706 100%);
       color: var(--accent);
-      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    header{
-      position: sticky; top:0; z-index:100;
-      background: rgba(5,10,12,.6);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(134,255,158,.08);
-    }
-    nav{
-      max-width: 1100px; margin: 0 auto; padding: 10px 16px;
-      display:flex; justify-content:space-between; align-items:center;
-    }
-    nav a{ text-decoration:none; color:#8fb4a0; }
-    nav .brand{ color:var(--accent); font-weight:700; }
-    nav .menu{ display:flex; gap:16px; }
-
-    @media(max-width:640px){
-      nav{ flex-direction:column; gap:8px; }
-      nav .brand{ font-size:14px; }
-      nav .menu a{ font-size:13px; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(rgba(255,255,255,.025) 50%, rgba(0,0,0,.025) 50%) 0 0 / 100% 4px,
+        repeating-linear-gradient(90deg, rgba(134,255,158,.03) 0 1px, transparent 1px 80px);
+      opacity: .42;
+      pointer-events: none;
     }
 
-    main.page{ padding-top:clamp(48px,9vh,120px); padding-bottom:64px; }
-    .wrap{ width:min(980px,92vw); margin:0 auto; }
-    .card{
-      background:linear-gradient(180deg,#0d1417 0%,#091114 100%);
-      border:1px solid #1b2b30; border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 120px rgba(134,255,158,.05);
-      padding:24px; margin-bottom:48px;
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 30%, transparent 0 34%, rgba(0,0,0,.38) 72%, rgba(0,0,0,.72) 100%);
+      pointer-events: none;
     }
 
-    .release{ text-align:center; }
-    .release img{ max-width:320px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
-    .hero-title{ margin:0 0 12px; }
-    .release-copy{
-      max-width:320px; margin:0 auto 20px; color:var(--muted); line-height:1.45; text-align:center;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .buttons{ margin:14px 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .btn{ padding:8px 12px; border-radius:10px; border:1px solid #1c3d2a; background:#0f2a1a; color:#a8ffbf; text-decoration:none; }
-    .btn:hover{ background:#143720; }
-
-    .socials{ margin-top:12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .social{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; font-size:13px; border-radius:10px; border:1px solid rgba(255,255,255,.35); color:#fff; text-decoration:none; }
-    .social:hover{ background:rgba(255,255,255,.08) }
-
-    /* --- TORRES --- */
-   /* grade – menos espaço entre as torres */
-.tower-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:4px;           /* era 18px */
-  justify-content:center;
-  margin:18px 0 24px;/* pode reduzir um pouco a margem também */
-}
-
-    .tower{
-      width:64px; height:64px; color:#86ff9e;
-      cursor:pointer; opacity:.9;
-      animation:towerPulse 3.2s ease-in-out infinite;
-      transition:opacity .2s;
+    img {
+      display: block;
+      max-width: 100%;
     }
-    .tower.gateway{ color:#f8e390; } /* só cor; sem mudar tamanho */
 
-   @keyframes towerPulse{
-  0%,100% { opacity:.85; }
-  50%     { opacity:1;   }
-}
-  /* grade */
-.tower-grid{
-  display:flex; flex-wrap:wrap; gap:15px; justify-content:center;
-  margin: 20px 0 28px;
-}
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(4, 8, 9, .72);
+      backdrop-filter: blur(10px);
+    }
 
-/* tamanhos */
-.tower{ width:108px; height:108px; }
-.tower.small{ width:72px; height:72px; }
-.tower.medium{ width:96px; height:96px; }
+    .nav {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      min-height: 58px;
+    }
 
-/* gateway: mesma dimensão (sem aumentar), apenas cor */
-.tower.gateway{
-  color:#f8e390; /* só cor */
-}
+    .brand {
+      color: var(--white);
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
 
+    .status-line {
+      justify-self: center;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-align: center;
+      white-space: nowrap;
+    }
 
-/* light pulse */
-@keyframes pulse {
-  0%,100% { opacity:.92; filter:none; }
-  50%     { opacity:1;   filter: drop-shadow(0 0 10px rgba(134,255,158,.35)); }
-}
-@keyframes pulseGold {
-  0%,100% { opacity:.94; filter:none; }
-  50%     { opacity:1;   filter: drop-shadow(0 0 12px rgba(255,210,90,.35)); }
-}
+    .menu {
+      justify-self: end;
+      display: flex;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-/* aplica só o pulso */
-.tower{ animation: pulse 4.8s ease-in-out infinite; }
-.tower.gateway{ animation: pulseGold 4.8s ease-in-out infinite; }
+    .menu a:hover,
+    .brand:hover {
+      color: var(--gold);
+    }
 
-/* acessibilidade: reduz movimento */
-@media (prefers-reduced-motion: reduce){
-  .tower, .tower.gateway{ animation:none !important; }
-}
+    .section {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
 
-/* responsivo */
-@media (max-width:768px){
-  .tower{ width:56px; height:56px; }
-  .tower.small{ width:44px; height:44px; }
-}/* engrossa levemente os traços da torre */
-.tower path{
-  stroke-width: 5px !important; /* ajuste fino: 4.5–5.5 */
-}
-    /* Torna as torres “sólidas” em neon:
-   pinta os paths e engrossa o traço */
-.tower path {
-  fill: currentColor !important;         /* sobrescreve fill="none" do SVG */
-  stroke: currentColor !important;       /* mesma cor para o contorno */
-  stroke-width: 4px;                     /* ajuste de espessura */
-  stroke-linejoin: round;                /* cantos suaves */
-  stroke-linecap: round;                 /* pontas suaves */
-}
+    .hero {
+      min-height: calc(100vh - 58px);
+      display: grid;
+      align-content: center;
+      padding: clamp(36px, 6vw, 72px) 0 28px;
+    }
 
-/* Dourado quando a classe .gateway estiver ativa */
-.tower.gateway { color: #f8e390; }
+    .hero-shell {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+    }
 
-/* Se quiser mais “peso”, aumente gradualmente: 4.5px, 5px… */
-    /* pinta e engrossa via o <use>, que herda para dentro do symbol */
-.tower use{
-  fill: currentColor;            /* dá “sólido” */
-  stroke: currentColor;          /* mantém contorno na mesma cor */
-  stroke-width: 5px;             /* ajuste: 4.5 ~ 6 se quiser mais bold */
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
+    .hero-kicker {
+      margin: 0 0 12px;
+      color: var(--muted);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
 
-/* cores continuam por classe */
-.tower{ color:#86ff9e; }         /* verde padrão */
-.tower.gateway{ color:#f8e390; } /* dourada quando ativa */
+    .hero-title {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(38px, 9vw, 112px);
+      line-height: .92;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 0 28px rgba(134,255,158,.12);
+    }
 
-</style>
+    .album-title {
+      margin: 8px 0 26px;
+      color: var(--gold);
+      font-size: clamp(17px, 2.4vw, 28px);
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .cover-frame {
+      position: relative;
+      width: min(360px, 76vw);
+      margin: 0 auto;
+    }
+
+    .cover-frame::before {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border: 1px solid rgba(248, 227, 144, .26);
+      transform: rotate(-2deg);
+    }
+
+    .cover-frame::after {
+      content: "RECOVERED AUDIO RECORD";
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      transform: translateX(-50%);
+      padding: 4px 9px;
+      border: 1px solid rgba(248, 227, 144, .35);
+      background: rgba(5, 8, 8, .92);
+      color: var(--gold);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .cover-frame img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 1px solid rgba(248, 227, 144, .22);
+      box-shadow: 0 28px 90px rgba(0,0,0,.68), 0 0 70px rgba(248,227,144,.09);
+    }
+
+    .release-copy {
+      max-width: 650px;
+      margin: 34px auto 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .buttons,
+    .socials {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn,
+    .social,
+    .sound-toggle {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 13px;
+      border: 1px solid rgba(134,255,158,.24);
+      border-radius: 8px;
+      background: rgba(13, 28, 19, .78);
+      color: #a8ffbf;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn:hover,
+    .social:hover,
+    .sound-toggle:hover {
+      border-color: rgba(248, 227, 144, .65);
+      color: var(--gold);
+      background: rgba(26, 25, 13, .82);
+    }
+
+    .sound-toggle {
+      margin-top: 18px;
+    }
+
+    .scroll-hint {
+      margin: 28px auto 0;
+      color: rgba(143, 180, 160, .74);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .band {
+      padding: 82px 0;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(24px, 4vw, 46px);
+      line-height: 1.05;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .integrity {
+      padding: 8px 11px;
+      border: 1px solid rgba(248,227,144,.24);
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .archive-copy,
+    .chrono-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .file-lines {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .file-lines li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(143,180,160,.13);
+      color: var(--muted);
+    }
+
+    .file-lines b {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .tracklist {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .track {
+      min-height: 112px;
+      padding: 12px;
+      border: 1px solid rgba(134,255,158,.14);
+      border-radius: 8px;
+      background: rgba(8, 15, 16, .72);
+    }
+
+    .track strong {
+      display: block;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .track span {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .track small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .chrono {
+      padding: 88px 0;
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .chrono-grid {
+      display: grid;
+      grid-template-columns: .88fr 1.12fr;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .identity {
+      display: grid;
+      gap: 12px;
+    }
+
+    .identity-row {
+      padding: 14px;
+      border: 1px solid rgba(134,255,158,.14);
+      border-radius: 8px;
+      background: rgba(8,15,16,.58);
+    }
+
+    .identity-row span {
+      display: block;
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .identity-row p {
+      margin: 5px 0 0;
+      color: var(--muted);
+    }
+
+    .tower-section {
+      padding: 88px 0 66px;
+      text-align: center;
+    }
+
+    .tower-grid {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(50px, 1fr));
+      gap: clamp(4px, 1.5vw, 14px);
+      align-items: end;
+      margin: 34px auto 20px;
+    }
+
+    .tower-button {
+      position: relative;
+      display: grid;
+      gap: 9px;
+      justify-items: center;
+      min-width: 0;
+      padding: 0 0 18px;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      cursor: default;
+    }
+
+    .tower-button svg {
+      width: min(88px, 100%);
+      height: 136px;
+      overflow: visible;
+      filter: drop-shadow(0 0 8px rgba(134,255,158,.18));
+      animation: pulseGreen 5.2s ease-in-out infinite;
+    }
+
+    .tower-button .tower-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .tower-button.gateway {
+      cursor: pointer;
+      color: var(--gold);
+    }
+
+    .tower-button.gateway svg {
+      filter: drop-shadow(0 0 16px rgba(248,227,144,.34));
+      animation: pulseGold 4.2s ease-in-out infinite;
+    }
+
+    .tower-button.gateway:hover .tower-label {
+      color: var(--gold);
+    }
+
+    .tower-button.locked {
+      color: rgba(143,180,160,.34);
+    }
+
+    .tower-button.locked svg {
+      opacity: .55;
+      animation: none;
+      filter: none;
+    }
+
+    .tower-button::after {
+      content: attr(data-status);
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      transform: translateX(-50%);
+      color: rgba(143,180,160,.66);
+      font-size: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .tower-button:hover::after,
+    .tower-button.gateway::after {
+      opacity: 1;
+    }
+
+    .terminal-call {
+      max-width: 680px;
+      margin: 34px auto 0;
+      padding: 18px;
+      border: 1px solid rgba(248,227,144,.24);
+      border-radius: 8px;
+      background: rgba(13, 12, 6, .52);
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .terminal-call b {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 28px 0 42px;
+      color: rgba(143,180,160,.68);
+      font-size: 12px;
+    }
+
+    @keyframes pulseGreen {
+      0%, 100% { opacity: .84; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes pulseGold {
+      0%, 100% { opacity: .86; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .tower-button svg { animation: none !important; }
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 12px 0;
+      }
+
+      .status-line,
+      .menu {
+        justify-self: center;
+      }
+
+      .archive-grid,
+      .chrono-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tracklist {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .tower-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 420px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .menu {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .status-line {
+        white-space: normal;
+        line-height: 1.35;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .tracklist {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+
+      .file-lines li,
+      footer {
+        display: block;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <audio id="bgm" src="/assets/Gateway.mp3" preload="auto" loop></audio>
 
-  <audio id="bgm" src="/assets/Gateway.mp3" preload="auto"></audio>
+  <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="towerCrystal_v4" viewBox="0 0 96 160">
+        <path d="M48 3 75 43 68 134 48 157 28 134 21 43Z" fill="currentColor" opacity=".22"/>
+        <path d="M48 3 75 43 68 134 48 157 28 134 21 43Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M48 3v154M21 43h54M28 134h40M35 43l13-40 13 40M36 134l12 23 12-23" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+        <path d="M33 64h30M35 82h26M37 101h22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+      </symbol>
+    </defs>
+  </svg>
 
-<!-- ===== tower-crystal (final) ===== -->
-<svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <symbol id="towerCrystal_v3" viewBox="0 0 827.63 2137.55">
-      <path
-        d="M254.86 514.09c0,14.29 -1.08,101.03 0.43,111 1.71,11.31 -0.56,25.24 0.85,35.55 1.29,9.41 0.2,59 0.2,72.6 0,12.56 0.74,22.81 0.74,35.66 0,12.14 -0.02,24.27 0,36.4 0.01,4.13 0.07,8.25 -1.59,11.78 -0.5,1.06 -0.83,2.25 -1.33,3.12l-1.1 1.87c-0.11,0.19 -0.5,0.68 -0.63,0.86l-1.3 1.67c-0.09,0.12 -0.24,0.29 -0.33,0.41l-2.6 3.34c-0.1,0.12 -0.22,0.31 -0.3,0.44l-11 17.23c-0.09,0.13 -0.23,0.3 -0.32,0.42 -0.13,0.18 -0.51,0.68 -0.63,0.86 -4.11,6.17 -4.04,7.73 -2.67,15.2 0.55,3.01 1.26,3.84 1.5,6.68 0.48,5.81 0.33,9.98 1.08,15.26l4.1 28.59c1.05,7.31 -0.15,8.3 1.63,14.71 0.94,3.37 0.74,10.94 1.31,15.03 0.48,3.38 1.16,4.18 1.46,6.71 0.59,4.8 0.24,10.36 1.14,15.2l1.4 7.51c0.89,4.79 0.48,9.53 1.68,14.66 1.62,6.9 0.85,13.93 2.82,21.69 0.74,2.9 0.37,4.58 0.44,7.73 0.12,5.22 1.91,9.6 2.24,14.85 0.75,11.95 2.09,17.49 3,29.69 0.4,5.38 2.23,6.92 2.2,14.14 -0.04,8.55 4.18,14.06 0.58,22.11 -2.32,5.19 -7.34,7.02 -11.17,11.12l-24.38 26.13c-0.88,0.94 -0.85,0.93 -1.77,1.94l-13.8 15.17c-0.77,0.85 -0.79,1.03 -1.68,2.04l-14.94 17.01c-0.14,0.16 -0.57,0.61 -0.72,0.76 -0.48,0.51 -0.68,0.73 -1.07,1.16 -1.34,1.46 -2.31,2.27 -3.63,3.8l-1.03 1.2c-0.1,0.11 -0.24,0.28 -0.34,0.41l-6.84 8.76c-4.63,5.94 -2.52,15.2 -2.83,22.43l-1.8 42.03c-0.6,14.04 -0.07,63.79 -0.31,72.49l-1.17 41.92c-0.16,5.88 -0.79,8.73 -0.76,14.09 0.04,9.66 0.13,19.33 0.02,28.99l-0.74 62.4c-0.04,3.3 -0.42,1.21 -1.14,4.06 -0.46,1.79 -0.39,2.86 -0.37,4.83 0.04,4.8 -0.52,6.67 -0.72,10.42 -0.28,5.13 0.76,10.94 -1.09,15.26 -1.05,2.45 -0.47,2.2 -1.33,4.61l-5.88 16.4c-1.89,5.28 -1.11,3.48 -2.02,6.16l-23.19 68.92c-0.58,1.71 -0.27,2.49 -0.91,4.29l-5.79 16.51c-1.31,3.73 -2.78,9.41 -4.06,13.02 -1.51,4.27 -3.2,7.54 -4.13,12.22 -0.49,2.51 -0.51,2.33 -1.51,4.43 -2.03,4.28 -2.6,8.25 -3.95,12.39l-2.74 8.4c-0.73,2.23 -0.6,1 -1.65,4.29l-5.38 16.9c-1.34,4.21 -3.1,7.96 -4.39,11.95l-4.54 14.02c-0.06,0.18 -0.11,0.39 -0.17,0.58 -0.22,0.76 -0.3,1.51 -0.55,2.42 -2.81,10.02 -6.81,19.43 -9.76,29.61 -0.88,3.03 -0.69,1.57 -1.52,3.69 -0.91,2.31 -0.47,2.61 -1.12,4.83 -0.67,2.28 -0.72,0.92 -1.6,3.6l-9.82 29.55c-0.86,2.59 -0.14,1.63 -1,4.19l-13.36 39.38c-0.61,1.79 0.05,0.35 -0.61,2.36l-7.64 23.56c-0.06,0.2 -0.08,0.41 -0.14,0.6l-4.68 13.89c-0.73,2.16 -0.84,1.83 -1.44,3.76l-1.96 6.21c-0.96,3.05 -1.5,5.62 -1.57,5.86 -0.05,0.18 -0.13,0.38 -0.19,0.55 -0.06,0.17 -0.17,0.35 -0.24,0.5 -1.31,2.87 -0.68,-0.42 -1.56,3.64 -1.22,5.62 -3.42,11.69 -5.29,17l-2.13 6.04c-0.07,0.21 -0.06,0.42 -0.11,0.63l-0.32 1.17c-0.05,0.17 -0.16,0.35 -0.22,0.52l-6.99 21.24c-1.48,4.5 -3.01,7.34 -4.41,11.93l-2.61 8.53c-1.09,3.56 -0.23,1.59 -1.52,4.43 -0.61,1.34 -0.13,0.01 -0.64,1.58l-4.98 15.08c-0.58,1.77 -0.31,2.64 -0.9,4.3 -0.68,1.92 -1.01,1.51 -1.74,4.2 -0.73,2.71 -0.52,1.36 -1.29,3.91l-3.96 13.12c-0.55,1.82 3.92,8.33 4.98,10.62l4.46 9.65c0.15,0.33 0.54,1.25 0.68,1.55l18.63 39.32c0.6,1.27 0.08,0.14 0.7,1.53l4.18 9.19c0.07,0.15 0.18,0.34 0.25,0.5l22.95 48.36c2.76,5.81 4.76,4.08 12.29,4.08l128.49 0.01c6.34,0 9.71,-0.79 15.59,-0.76 26.31,0.15 52.89,-1.47 79.5,-1.47l98.06 0c22.18,0 41.86,-0.74 63.89,-0.74 21.64,0 41.65,-1.48 63.89,-1.48l97.32 0c11.62,0 20.6,-0.74 31.95,-0.74 10.65,0 21.29,0 31.95,0 27.09,0 52.95,-1.26 80.26,-1.45 8.78,-0.06 9.94,-3.91 15.13,-8.65 2.02,-1.84 2.38,-2.1 4.06,-4.11 1.39,-1.66 2.59,-2.59 3.93,-4.24 1.24,-1.54 2.3,-3.09 3.49,-4.68 5.82,-7.8 11.55,-15.7 17.24,-23.62l14.91 -20.74c1.62,-2.25 8.81,-10.94 8.81,-12.73 0,-4.3 -1.03,-4.57 -1.98,-7.68l-10.66 -34.65c-0.85,-2.76 -0.77,-1.14 -1.64,-4.31 -0.26,-0.98 -0.17,-1.41 -0.51,-2.46l-7.43 -23.03c-1.21,-3.76 -0.98,-1.59 -1.94,-4.75l-19.9 -65.53c-0.83,-2.73 -1.07,-1.89 -1.95,-4.74l-9.31 -30.07c-0.6,-1.94 -0.83,-3.28 -1.49,-5.2l-4.01 -11.59c-0.07,-0.21 -0.04,-0.42 -0.11,-0.63l-13.62 -42.84c-1.04,-3.26 -0.59,-1.9 -1.44,-5.24 -0.63,-2.47 -1.17,-2.16 -1.77,-4.18 -0.75,-2.57 -0.39,-2.53 -1.35,-5.33l-1.72 -4.97c-1.15,-3.34 -1,-1.68 -1.9,-4.78 -0.46,-1.59 -0.18,-1.1 -0.47,-2.5 -0.8,-3.85 -1.25,-4.08 -2.56,-7.84l-6.92 -19.82c-1.05,-3 -0.88,-2.23 -2.04,-4.65 -0.92,-1.92 -1.06,-3.03 -1.66,-5.02l-25.89 -86.29c-1.1,-3.68 -0.91,-2 -1.89,-4.8 -0.66,-1.9 -0.48,-3.39 -1.19,-5.49l-6.58 -19.43c-0.94,-2.79 -1.03,-2.85 -1.8,-4.88 -0.98,-2.57 -0.36,-2.9 -1.09,-5.59 -0.66,-2.44 -1.2,-2.03 -1.78,-4.9 -0.66,-3.29 -0.53,-2.31 -1.45,-5.24l-3.19 -10.19c-0.61,-1.95 -0.44,-3.46 -1.22,-5.46 -1.35,-3.49 -1.61,-0.22 -1.71,-4.98l-0.68 -32.75c-0.09,-4.15 -1.33,-7.71 -1.41,-11.22l-0.84 -39.27c-0.28,-12.94 -2.26,-23.74 -2.23,-37.14 0.05,-22.03 -2.23,-41.7 -2.23,-63.89 0,-8.43 -0.44,-17.73 -1.53,-25.22 -1.42,-9.7 -0.4,-41.49 -1.85,-50.9 -1.39,-9.08 -0.35,-16.27 -1.12,-25.62 -0.6,-7.32 0.02,-17.69 -0.81,-25.19 -0.35,-3.17 -1.21,-8.64 -1.37,-12 -0.55,-11.58 -1.37,-13.12 -8.81,-23.88l-5.47 -7.91c-0.59,-0.86 -0.71,-0.96 -1.25,-1.72 -0.09,-0.13 -0.22,-0.31 -0.31,-0.44l-39.44 -55.71c-2.11,-2.99 -0.25,-5.82 0.43,-10.5 0.52,-3.61 0.25,-8.52 0.89,-12.48 0.7,-4.35 1.29,-6.03 1.95,-10.68l14.95 -104.66c0.51,-3.57 1.76,-6.79 2.12,-11.25 0.73,-9.14 4.91,-28.28 5.22,-34.16 0.24,-4.72 1.55,-7.46 2.04,-11.33 0.77,-5.99 3.71,-24.31 2.9,-29.26 -1.1,-6.77 -10.2,-24.94 -14.28,-31.8l-14.4 -24.23c-0.08,-0.14 -0.22,-0.31 -0.3,-0.45l-5.17 -8.95c-3.04,-5.26 -6.64,-11.39 -10.48,-16.27 -1.48,-1.89 -5.22,-5.31 -5.98,-7.38 -4.02,-10.87 0.03,-121.04 -1.89,-156.35 -0.27,-4.96 0.24,-8.98 0.66,-12.77 0.39,-3.55 -0.68,-7.79 -0.67,-12.49 0.03,-8.84 0.75,-16.42 0.75,-26.01l0 -138.18 -11.34 -36.21c-0.43,-1.38 -0.85,-2.86 -1.2,-3.99l-2.65 -8.49c-0.53,-1.71 -0.95,-1.94 -1.55,-3.65 -2.74,-7.81 -5.04,-16.42 -7.7,-24.24l-15.13 -44.31c-0.68,-2.01 -0.72,-0.96 -1.55,-3.65 -0.6,-1.94 -0.63,-2.97 -1.22,-4.72l-10.96 -32.12c-0.65,-1.9 -0.51,-2.06 -1.3,-3.9 -2.73,-6.4 -4.52,-13.62 -6.68,-20.07l-8.19 -24.5c-0.17,-0.5 -0.49,-1.02 -0.68,-1.55 -0.42,-1.21 -0.29,-1.1 -0.61,-2.36 -0.44,-1.65 -0.91,-2.28 -1.4,-3.8l-2.73 -8.41c-0.68,-2.1 -0.51,-1.92 -1.09,-4.11 -0.43,-1.64 -0.83,-1.94 -1.37,-3.83l-6.01 -20.74c-2.84,-9.83 -6.1,-19 -9.17,-28.72l-3.92 -12.42c-0.56,-1.77 -0.1,0.25 -0.64,-1.59l-6.75 -22.96c-0.57,-1.94 0.02,0.51 -0.8,-2.17l-7 -22.72c-0.58,-1.88 -0.27,-2.43 -0.85,-4.35l-10.09 -33c-0.5,-1.63 -0.79,-1.63 -1.48,-3.71l-12.3 -36.73c-4.47,-13.35 -9.07,-27.55 -12.27,-41.21 -0.76,-3.25 -1.61,-4.97 -2.64,-8.5 -2.45,-8.37 -5.44,-16.15 -7.39,-24.56 -1.52,-6.57 -3.36,-23.17 -9.22,-23.47 -3.51,-0.17 -3.13,7.75 -4.39,11.21l-4.18 11.42c-0.56,1.53 -0.66,2.71 -1.09,4.1 -1.83,5.72 -3.1,8.1 -4.35,12l-1.25 3.95c-0.75,2.36 -0.72,1.98 -1.56,4.38l-8.25 23.69c-0.46,1.33 -0.17,0.09 -0.68,1.55l-7.61 22.11c-4.01,11.66 -8.69,24.34 -12.35,35.94l-1.25 3.95c-1.83,5.79 -4.69,13.57 -6.59,19.41l-27.66 85.26c-2.52,7.78 -5.52,16.17 -8,23.94l-15.43 48.46c-3.35,10.53 -7.61,21.39 -9.85,32.49 -0.98,4.89 -5.03,14.72 -6.79,19.95 -0.68,2 -0.46,2.81 -1.18,4.76 -0.44,1.17 -1,2.4 -1.45,3.75l-6.69 20.06c-0.71,2.13 -0.31,1.98 -1.08,4.12l-18.58 51.25c-0.87,2.4 -2.1,5.26 -2.85,7.55 -3.23,9.78 -7.04,18.24 -9.83,28.05 -2.48,8.73 -7.16,22.31 -7.16,30.73z"
-        fill="currentColor"/>
-    </symbol>
-  </defs>
-</svg>
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="/">CHRONOHEALERS</a>
+      <div class="status-line" id="statusLine">PUBLIC ARCHIVE // SIGNAL STABLE // TOWER INDEX: 3.6.9</div>
+      <div class="menu">
+        <a href="#release">Album</a>
+        <a href="#archive">Archive</a>
+        <a href="#chronolog">ChronoLog</a>
+      </div>
+    </nav>
+  </header>
 
+  <main>
+    <section class="section hero" id="release">
+      <div class="hero-shell">
+        <p class="hero-kicker">Official site // temporal anchor confirmed</p>
+        <h1 class="hero-title">Chronohealers</h1>
+        <p class="album-title">The Shape of Emptiness</p>
 
-  <header>
-  <nav>
-    <a class="brand" href="/">CHRONOHEALERS</a>
-    <div class="menu">
-      <a href="#release">Album</a>
-      <a href="#about">The Chronohealers</a>
-    </div>
-  </nav>
-</header>
-
-<main class="page">
-  <div class="wrap">
-
-    <div class="card">
-      <section id="release" class="release">
-        <h1 class="hero-title">CHRONOHEALERS</h1>
-        <p class="release-copy">"The Shape of Emptiness" — an immersive sonic transmission. Welcome to the resonance field.</p>
-
-        <img src="/assets/cover.jpg" alt="The Shape of Emptiness — album cover">
-
-        <div class="buttons">
-          <a class="btn" href="#">Spotify</a>
-          <a class="btn" href="#">Apple Music</a>
-          <a class="btn" href="#">Amazon Music</a>
-          <a class="btn" href="#">YouTube Music</a>
+        <div class="cover-frame">
+          <img src="/assets/cover.jpg" alt="The Shape of Emptiness album cover">
         </div>
 
-        <div class="socials">
+        <p class="release-copy">
+          An alternative rock and metal record on the surface. A recovered transmission beneath it.
+          Listen first. Investigate only if the signal starts answering back.
+        </p>
+
+        <div class="buttons" aria-label="Streaming links">
+          <a class="btn" href="https://open.spotify.com/search/Chronohealers%20The%20Shape%20of%20Emptiness" target="_blank" rel="noopener">Spotify</a>
+          <a class="btn" href="https://music.apple.com/il/album/the-shape-of-emptiness/1847118233" target="_blank" rel="noopener">Apple Music</a>
+          <a class="btn" href="https://music.amazon.com/search/Chronohealers+The+Shape+of+Emptiness" target="_blank" rel="noopener">Amazon Music</a>
+          <a class="btn" href="https://music.youtube.com/search?q=Chronohealers+The+Shape+of+Emptiness" target="_blank" rel="noopener">YouTube Music</a>
+        </div>
+
+        <div class="socials" aria-label="Social links">
           <a class="social" href="https://www.instagram.com/chronohealers" target="_blank" rel="noopener">Instagram</a>
           <a class="social" href="https://x.com/Chronohealers" target="_blank" rel="noopener">X.com</a>
         </div>
 
-        <!-- GRADE DE TORRES -->
-     <div class="tower-grid" aria-hidden="true">
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-     <!-- TORRE 03 — gateway (clicável) -->
-          <svg class="tower medium" id="gatewayTower"><use href="#towerCrystal_v3"/></svg>
-       
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-  <svg class="tower medium"><use href="#towerCrystal_v3"/></svg>
-</div>
-
-      </section>
-    </div>
-
-    <section id="about" class="card">
-      <h2>The Chronohealers</h2>
-      <p class="muted">
-        Those who heal time know memory is not a record — it’s a key.<br>
-        We remain awake while others drift into the hollow of forgetting.<br>
-        Only the ones who listen can feel the echo pulling back through layers.<br>
-        Remember: when the golden tower appears — follow.
-      </p>
+        <button class="sound-toggle" id="soundToggle" type="button">Sound: off</button>
+        <div class="scroll-hint">Scroll // archive continues</div>
+      </div>
     </section>
 
-  </div>
-</main>
+    <section class="section band" id="archive">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Recovered record</p>
+          <h2>The album is not only an album.</h2>
+        </div>
+        <div class="integrity">INTEGRITY: 72%</div>
+      </div>
 
-<script>
-  // Gera um SVG animado (giro + pulso + glitch) como data URL
-function makeAnimatedRingDataURL(colorHex) {
-  const svg = `
+      <div class="archive-grid">
+        <p class="archive-copy">
+          The Shape of Emptiness is presented as a sonic transmission: nineteen fragments
+          recovered from a field where memory, identity, and time no longer agree with each other.
+          Theon is the witness. Sorin is the signal that should not still exist.
+        </p>
+
+        <ul class="file-lines" aria-label="Recovered file notes">
+          <li><b>THEON</b><span>witness file unstable</span></li>
+          <li><b>SORIN</b><span>guide signal persists</span></li>
+          <li><b>VOID</b><span>absence with intent</span></li>
+          <li><b>TOWERS</b><span>anchors // prisons // archives</span></li>
+        </ul>
+      </div>
+
+      <div class="tracklist" aria-label="Narrative track fragments">
+        <article class="track"><span>01</span><strong>Gateway</strong><small>Entry fragment. The first pulse opens where the map ends.</small></article>
+        <article class="track"><span>02</span><strong>3:33</strong><small>Pattern detected. The sequence begins to repeat.</small></article>
+        <article class="track"><span>03</span><strong>The Archivist</strong><small>A witness writes what the Void fails to erase.</small></article>
+        <article class="track"><span>04</span><strong>Echoes of the Lost</strong><small>Names return without bodies attached to them.</small></article>
+        <article class="track"><span>05</span><strong>The Hollow City</strong><small>Towers appear where streets should be.</small></article>
+        <article class="track"><span>06</span><strong>Coordinates</strong><small>The location is real. The coordinates are not stable.</small></article>
+        <article class="track"><span>07</span><strong>Sorin's Message</strong><small>The guide speaks from a place no one survives.</small></article>
+        <article class="track"><span>08</span><strong>Shape of Emptiness</strong><small>The Void is not empty. It is unfinished hunger.</small></article>
+        <article class="track"><span>09</span><strong>Exit Code</strong><small>No exit is confirmed. One code remains active.</small></article>
+      </div>
+    </section>
+
+    <section class="section chrono" id="chronolog">
+      <div class="chrono-grid">
+        <div>
+          <p class="eyebrow">The Chronohealers</p>
+          <h2>Those who heal time are not fixed in time.</h2>
+        </div>
+
+        <div class="identity">
+          <div class="identity-row">
+            <span>Organization status</span>
+            <p>Number of members unknown. Location unknown. Temporal origin unconfirmed.</p>
+          </div>
+          <div class="identity-row">
+            <span>Known directive</span>
+            <p>Protect memory from erasure. Recover the names before the Void consumes their history.</p>
+          </div>
+          <div class="identity-row">
+            <span>Field warning</span>
+            <p>If the golden tower appears, follow only after the signal stabilizes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tower-section" aria-labelledby="towerTitle">
+      <p class="eyebrow">Tower index</p>
+      <h2 id="towerTitle">3.6.9</h2>
+      <p class="chrono-copy">
+        Nine anchors have been indexed. Tower 3 is currently emitting a recoverable ChronoLog signal.
+      </p>
+
+      <div class="tower-grid">
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 1 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">01</span>
+        </button>
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 2 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">02</span>
+        </button>
+        <button class="tower-button gateway" id="gatewayTower" type="button" data-status="GATEWAY" aria-label="Tower 3 gateway to ChronoLog Terminal">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">03</span>
+        </button>
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 4 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">04</span>
+        </button>
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 5 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">05</span>
+        </button>
+        <button class="tower-button locked" type="button" data-status="SIGNAL LOST" aria-label="Tower 6 signal lost">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">06</span>
+        </button>
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 7 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">07</span>
+        </button>
+        <button class="tower-button" type="button" data-status="DORMANT" aria-label="Tower 8 dormant">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">08</span>
+        </button>
+        <button class="tower-button locked" type="button" data-status="LOCKED" aria-label="Tower 9 locked">
+          <svg><use href="#towerCrystal_v4"></use></svg><span class="tower-label">09</span>
+        </button>
+      </div>
+
+      <div class="terminal-call">
+        <b>CHRONOLOG TERMINAL:</b> dormant interface detected inside Tower 3.
+        Manual access may expose recovered transmissions, corrupted files, and memory keys.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>VOID PROTOCOL: dormant until accessed</span>
+    <span>Last recovered signal: 03:06:09</span>
+  </footer>
+
+  <script>
+    function makeAnimatedRingDataURL(colorHex) {
+      const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <style>
     circle { transform-box: fill-box; transform-origin: 50% 50%; }
-
-    /* Anel base sempre visível */
-    .ring-base {
-      fill: none;
-      stroke: ${colorHex};
-      stroke-width: 6;
-      opacity: 0.9;
-      filter: drop-shadow(0 0 6px ${colorHex}80);
-    }
-
-    /* Faixa de luz que gira */
-    .ring-glow {
-      fill: none;
-      stroke: ${colorHex};
-      stroke-width: 10;              /* mais grosso que o anel */
-      stroke-linecap: round;
-      stroke-dasharray: 25 200;      /* cria a ponta de luz */
-      animation:
-        spin 2s linear infinite,
-        pulse 1.3s ease-in-out infinite;
-      filter: drop-shadow(0 0 12px ${colorHex});
-      opacity: 0.9;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: .85; }
-      50%      { opacity: 1;   }
-    }
+    .ring-base { fill: none; stroke: ${colorHex}; stroke-width: 6; opacity: .9; filter: drop-shadow(0 0 6px ${colorHex}80); }
+    .ring-glow { fill: none; stroke: ${colorHex}; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 25 200; animation: spin 2s linear infinite, pulse 1.3s ease-in-out infinite; filter: drop-shadow(0 0 12px ${colorHex}); opacity: .9; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
   </style>
-
   <circle class="ring-base" cx="50" cy="50" r="38"/>
   <circle class="ring-glow" cx="50" cy="50" r="38"/>
 </svg>`;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-}
-
-  function setAnimatedFavicon(colorHex) {
-    // remove anteriores
-    document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
-    // cria novo (data URL)
-    const link = document.createElement("link");
-    link.rel  = "icon";
-    link.type = "image/svg+xml";
-    link.href = makeAnimatedRingDataURL(colorHex);
-    document.head.appendChild(link);
-  }
-
-  function applyFaviconByPath() {
-    const path = location.pathname.toLowerCase();
-    const isTerminal = path.startsWith("/chronologterminal");
-    // Home = verde, Terminal = dourado
-    if (isTerminal) {
-      setAnimatedFavicon("#f8e390");
-    } else {
-      setAnimatedFavicon("#86ff9e");
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
     }
-  }
 
-  document.addEventListener("DOMContentLoaded", applyFaviconByPath);
-  window.addEventListener("popstate", applyFaviconByPath);
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") applyFaviconByPath();
-  });
-</script>
-<script>
-// Torre 3 → abre ChronoLog + pisca dourado
-document.addEventListener("DOMContentLoaded", () => {
-  const gateway = document.getElementById("gatewayTower");
-  if (!gateway) return;
+    function setAnimatedFavicon(colorHex) {
+      document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.type = "image/svg+xml";
+      link.href = makeAnimatedRingDataURL(colorHex);
+      document.head.appendChild(link);
+    }
 
-  // clique → Chronolog Terminal
-  gateway.style.cursor = "pointer";
-  gateway.addEventListener("click", () => {
-    window.location.href = "/chronologterminal";
-  });
+    function applyFaviconByPath() {
+      const isTerminal = location.pathname.toLowerCase().startsWith("/chronologterminal");
+      setAnimatedFavicon(isTerminal ? "#f8e390" : "#86ff9e");
+    }
 
-  // ficar VERDE por padrão; a cada ciclo, fica DOURADA por 5s
-  const ON_MS  = 5000;   // tempo dourada
-  const CYCLE  = 15000;  // intervalo entre os flashes
+    function updateStatusByScroll() {
+      const status = document.getElementById("statusLine");
+      const progress = window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight);
+      if (progress > .72) {
+        status.textContent = "VOID PROTOCOL // TOWER 3 GATEWAY ACTIVE // TRACE: LOW";
+      } else if (progress > .38) {
+        status.textContent = "ARCHIVE MODE // SIGNAL DRIFT DETECTED // PATTERN: 3.6.9";
+      } else {
+        status.textContent = "PUBLIC ARCHIVE // SIGNAL STABLE // TOWER INDEX: 3.6.9";
+      }
+    }
 
-  function flashOn(){
-    gateway.classList.add("gateway");                 // fica dourada
-    setTimeout(() => gateway.classList.remove("gateway"), ON_MS); // volta ao verde
-  }
+    document.addEventListener("DOMContentLoaded", () => {
+      applyFaviconByPath();
+      updateStatusByScroll();
 
-  // começa verde; primeiro flash após 1s (ajuste como preferir)
-  setTimeout(flashOn, 1000);
-  setInterval(flashOn, CYCLE);
-});
-</script>
-<script>
-const bgm = document.getElementById("bgm");
-let bgmStarted = false;
+      const gateway = document.getElementById("gatewayTower");
+      if (gateway) {
+        gateway.addEventListener("click", () => {
+          window.location.href = "/chronologterminal";
+        });
+      }
 
-function startMusic(){
-  if (bgmStarted) return;
-  bgmStarted = true;
+      const bgm = document.getElementById("bgm");
+      const soundToggle = document.getElementById("soundToggle");
+      let soundOn = false;
 
-  bgm.volume = 0;
-  bgm.play().catch(()=>{ /* navegador às vezes aguarda interação */ });
+      soundToggle.addEventListener("click", () => {
+        soundOn = !soundOn;
+        if (soundOn) {
+          bgm.volume = 0;
+          bgm.play().catch(() => {});
+          soundToggle.textContent = "Sound: on";
+          let volume = 0;
+          const fade = setInterval(() => {
+            volume += .015;
+            bgm.volume = Math.min(volume, .28);
+            if (volume >= .28 || !soundOn) clearInterval(fade);
+          }, 80);
+        } else {
+          bgm.pause();
+          soundToggle.textContent = "Sound: off";
+        }
+      });
+    });
 
-  let v = 0;
-  const fade = setInterval(()=>{
-    v += 0.02; // velocidade do fade (ajustável)
-    bgm.volume = Math.min(v, 1);
-    if (v >= 1) clearInterval(fade);
-  }, 120); // intervalo (ms)
-}
-
-// dispara ao primeiro clique em QUALQUER lugar
-document.addEventListener("click", startMusic);
-</script>
+    window.addEventListener("scroll", updateStatusByScroll, { passive: true });
+    window.addEventListener("popstate", applyFaviconByPath);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") applyFaviconByPath();
+    });
+  </script>
 </body>
 </html>
