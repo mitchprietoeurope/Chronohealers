@@ -1,0 +1,44 @@
+[
+  {
+    "id": "063",
+    "title": "Transmission 063 // Layer 0 Signal",
+    "aliases": [
+      "TRANSMISSION 063",
+      "TRANSMISSION #063",
+      "T063",
+      "LOG_063",
+      "LAYER 0",
+      "GATEWAY"
+    ],
+    "file": "assets/logs/transmission-063.txt"
+  },
+  {
+    "id": "963",
+    "title": "Signal Fragment",
+    "aliases": [
+      "TRANSMISSION 963",
+      "TRANSMISSION #963"
+    ],
+    "text": "The field is unstable. Chronohealers are requested to maintain position until the next pulse."
+  },
+  {
+    "id": "LOG_ΔTW",
+    "title": "Theon Wake Fragment",
+    "aliases": [
+      "THEON",
+      "LAYERS",
+      "AWAKENED",
+      "LOG_DTW"
+    ],
+    "text": "I'm Theon and I have awakened. The Layers of Emptiness will fall. One by one."
+  },
+  {
+    "id": "VOID",
+    "title": "Void Network",
+    "aliases": [
+      "THE VOID",
+      "VOID NETWORK"
+    ],
+    "text": "The Void is listening. It does not answer in words. It answers in delay."
+  }
+]
