@@ -177,10 +177,76 @@
     const LOGS_JSON = "assets/logs.json";
     const FALLBACK_LOGS = [
       {
+        id: "063",
+        title: "Transmission 063 // Layer 0 Signal",
+        aliases: ["TRANSMISSION 063", "TRANSMISSION #063", "T063", "LOG_063", "LAYER 0", "GATEWAY"],
+        text: `[CHRONOLOG // TRANSMISSION 063]
+
+STATUS: PARTIAL RECOVERY
+
+TRANSMISSION ORIGIN: LAYER 0
+
+ACCESS LEVEL: PUBLIC
+
+SOURCE: UNKNOWN
+
+────────────────────────────────
+
+The signal returned after so long in the quiet.
+
+I wasn't expecting to hear it again.
+
+If you are reading this, the Gateway has opened again.
+
+Do not trust the silence between transmissions.
+
+Silence is how it listens.
+
+I've been monitoring irregular activity across the tower network.
+
+Three structures started responding to the signal.
+
+The first one noticed was Tower Three.
+
+The other appears to be Tower Nine.
+
+The third remains uncertain.
+
+The markings suggest Five.
+
+Or perhaps Six.
+
+I need more data.
+
+For now, avoid direct contact.
+
+The towers are not just monuments.
+
+They are something more.
+
+I can sense it.
+
+────────────────────────────────
+
+Absolutely NEVER stay connected for too long.
+
+It will find you.
+
+It always does.
+
+[END OF TRANSMISSION]`
+      },
+      {
         id: "963",
         title: "Signal Fragment",
         aliases: ["TRANSMISSION 963", "TRANSMISSION #963"],
         text: "The field is unstable. Chronohealers are requested to maintain position until the next pulse."
+      },
+      {
+        id: "LOG_ΔTW",
+        title: "Theon Wake Fragment",
+        aliases: ["THEON", "LAYERS", "AWAKENED", "LOG_DTW"],
+        text: "I'm Theon and I have awakened. The Layers of Emptiness will fall. One by one."
       },
       {
         id: "VOID",
@@ -351,8 +417,11 @@
     function help() {
       line("AVAILABLE COMMANDS:");
       line("  HELP            - show this help");
-      line("  LIST            - list transmissions (masked)");
-      line("  ACCESS <CODE>   - open a record, ex: ACCESS 963");
+      line("  LIST / DIR      - list transmissions (masked)");
+      line("  ACCESS <CODE>   - open a record, ex: ACCESS 063");
+      line("  OPEN <CODE>     - alias for ACCESS");
+      line("  READ <CODE>     - alias for ACCESS");
+      line("  TYPE <CODE>     - alias for ACCESS");
       line("  PASS <PASSWORD> - unlock encrypted attachment after ACCESS");
     }
 
@@ -481,12 +550,16 @@
           break;
 
         case "LIST":
+        case "DIR":
           listMasked();
           break;
 
         case "ACCESS":
+        case "OPEN":
+        case "READ":
+        case "TYPE":
           if (!arg) {
-            line("USAGE: ACCESS <CODE>");
+            line(`USAGE: ${cmd} <CODE>`);
             break;
           }
 
