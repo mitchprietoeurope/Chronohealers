@@ -415,14 +415,12 @@ It always does.
     }
 
     function help() {
-      line("AVAILABLE COMMANDS:");
-      line("  HELP            - show this help");
-      line("  LIST / DIR      - list transmissions (masked)");
-      line("  ACCESS <CODE>   - open a record, ex: ACCESS 063");
-      line("  OPEN <CODE>     - alias for ACCESS");
-      line("  READ <CODE>     - alias for ACCESS");
-      line("  TYPE <CODE>     - alias for ACCESS");
-      line("  PASS <PASSWORD> - unlock encrypted attachment after ACCESS");
+      line("[CHRONOLOG // PUBLIC PROTOCOLS]", "gold");
+      line("  LIST              - indexed transmissions");
+      line("  ACCESS <ID>       - recover transmission");
+      line("  PASS <KEY>        - decrypt pending attachment");
+      line("");
+      line("Legacy syntax may still respond.", "dim");
     }
 
     function listMasked() {
